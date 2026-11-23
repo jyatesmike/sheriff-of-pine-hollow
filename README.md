@@ -29,8 +29,8 @@ objects list). Their lines (power-up, hurt, win per episode, birds, roping Earl)
 PixelLab art is in: drop his GIFs in `art/source/pixellab/jim/` like the Sheriff's.
 
 ## Run it
-1. Install **Godot 4.1.x** (4.1.4 is what CI uses; standard build, not .NET):
-   https://github.com/godotengine/godot/releases/tag/4.1.4-stable
+1. Install **Godot 4.1.x** (4.1.3 matches the handheld and is what CI uses; standard build, not .NET):
+   https://github.com/godotengine/godot/releases/tag/4.1.3-stable
 2. Open Godot → **Import** → pick this folder's `project.godot` → **Import & Edit**.
 3. Press **F5** (Run Project).
 
@@ -277,7 +277,7 @@ public repo, no secrets, no paid services):
 1. `python3 tools/validate.py`: sprite sheet sizes vs `data/sprites.json`, props atlas,
    tiles and backgrounds, every level's theme/music/object types, `{name}` slots in
    `game_text.gd`, and audio file names.
-2. `tools/ci/godot_checks.sh import`: opens the project in Godot 4.1.4 and loads every
+2. `tools/ci/godot_checks.sh import`: opens the project in Godot 4.1.3 and loads every
    script and scene (`tools/ci/check_scripts.gd`); any script error fails.
 3. `tools/ci/godot_checks.sh bots`: the bot plays all 7 levels as the Sheriff, Dewey and Jim
    (21 runs, in parallel, under a minute).

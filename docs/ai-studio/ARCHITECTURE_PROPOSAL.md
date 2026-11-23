@@ -261,7 +261,7 @@ Workers for sprites and sound should **use the existing free generators first**.
 
 | Item | Status |
 |---|---|
-| CI workflow `.github/workflows/ci.yml` (free, no secrets, Godot 4.1.4 pinned by SHA-512) | Done |
+| CI workflow `.github/workflows/ci.yml` (free, no secrets, Godot 4.1.3 pinned by SHA-512, same as the device) | Done |
 | `tools/validate.py`: sheets, props, tiles, backgrounds, levels, name slots, audio names | Done; tested by breaking 8 things on purpose, all caught |
 | `tools/ci/check_scripts.gd`: compiles every script and scene (the editor alone only compiles autoloads) | Done; a broken script and its 4 dependents were caught |
 | Bot runs: 7 levels × 3 heroes in god mode | Done; 21/21 pass, about 1 minute in total |
