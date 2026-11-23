@@ -1,0 +1,251 @@
+{
+ "id": "county_fair",
+ "theme": "farm",
+ "role": "sheriff",
+ "width_tiles": 250,
+ "player_start": 6,
+ "earl_start": 22,
+ "fence_x": 246,
+ "ground": [
+  [
+   0,
+   40
+  ],
+  [
+   52,
+   250
+  ]
+ ],
+ "crates": [],
+ "platforms": [],
+ "flap_hens": [],
+ "pie_arcs": [],
+ "geese": [],
+ "stones": [],
+ "boulders": [],
+ "hens": [
+  [
+   140,
+   156
+  ]
+ ],
+ "pies": [
+  14,
+  22,
+  30,
+  58,
+  62,
+  98,
+  124,
+  134,
+  150,
+  162,
+  172
+ ],
+ "golden_pie": [
+  {
+   "x": 84,
+   "h": 18.6
+  }
+ ],
+ "dewey": [
+  64
+ ],
+ "music": "county_fair",
+ "earl_ai": {
+  "taunts": true,
+  "lasso_ok": true
+ },
+ "medals": {
+  "time": [
+   70,
+   110,
+   170
+  ]
+ },
+ "sky_pies": [
+  [
+   42,
+   6.0
+  ],
+  [
+   46,
+   6.8
+  ],
+  [
+   50,
+   6.2
+  ],
+  [
+   75.6,
+   9.1
+  ],
+  [
+   76.0,
+   12.1
+  ],
+  [
+   77.4,
+   14.7
+  ],
+  [
+   79.7,
+   16.7
+  ],
+  [
+   82.5,
+   17.8
+  ],
+  [
+   85.5,
+   17.8
+  ],
+  [
+   88.3,
+   16.7
+  ],
+  [
+   90.6,
+   14.7
+  ],
+  [
+   92.0,
+   12.1
+  ],
+  [
+   92.4,
+   9.1
+  ]
+ ],
+ "objects": [
+  {
+   "type": "fair_decor",
+   "x": 10,
+   "kind": "arch"
+  },
+  {
+   "type": "fair_decor",
+   "x": 26,
+   "kind": "booth"
+  },
+  {
+   "type": "fair_decor",
+   "x": 0,
+   "kind": "lights",
+   "w": 40
+  },
+  {
+   "type": "balloons",
+   "x": 40,
+   "at": [
+    [
+     42,
+     3.4
+    ],
+    [
+     46,
+     4.2
+    ],
+    [
+     50,
+     3.6
+    ]
+   ]
+  },
+  {
+   "type": "checkpoint",
+   "x": 56
+  },
+  {
+   "type": "ferris_wheel",
+   "x": 84,
+   "h": 9.5,
+   "r": 7,
+   "cars": 8,
+   "fence": 4
+  },
+  {
+   "type": "fair_fence",
+   "x": 88,
+   "h": 8
+  },
+  {
+   "type": "checkpoint",
+   "x": 96
+  },
+  {
+   "type": "pie_contest",
+   "x": 110
+  },
+  {
+   "type": "fair_decor",
+   "x": 136,
+   "kind": "tent",
+   "color": "#4a8ae8"
+  },
+  {
+   "type": "fair_decor",
+   "x": 160,
+   "kind": "tent",
+   "color": "#c86ae8"
+  },
+  {
+   "type": "fair_decor",
+   "x": 120,
+   "kind": "lights",
+   "w": 60
+  },
+  {
+   "type": "checkpoint",
+   "x": 176
+  },
+  {
+   "type": "bumper_cars",
+   "x": 184,
+   "w": 48
+  },
+  {
+   "type": "star",
+   "x": 2,
+   "h": 1.2
+  },
+  {
+   "type": "star",
+   "x": 160,
+   "h": 7.4
+  },
+  {
+   "type": "star",
+   "x": 91,
+   "h": 9.6
+  },
+  {
+   "type": "favor",
+   "x": 100,
+   "npc": "barker",
+   "item": "megaphone",
+   "item_x": 136,
+   "item_h": 7.2
+  },
+  {
+   "type": "powerup",
+   "x": 54,
+   "h": 1.2
+  },
+  {
+   "type": "powerup",
+   "x": 134,
+   "h": 1.2
+  }
+ ],
+ "powerup_hens": [
+  [
+   58,
+   68
+  ],
+  [
+   66,
+   76
+  ]
+ ]
+}

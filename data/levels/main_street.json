@@ -1,0 +1,284 @@
+{
+ "id": "main_street",
+ "theme": "town",
+ "role": "sheriff",
+ "width_tiles": 270,
+ "fence_x": 262,
+ "player_start": 6,
+ "earl_start": 16,
+ "ground": [
+  [
+   0,
+   80
+  ],
+  [
+   92,
+   270
+  ]
+ ],
+ "crates": [
+  {
+   "x": 150,
+   "stack": 0
+  }
+ ],
+ "platforms": [],
+ "hens": [
+  [
+   26,
+   36
+  ]
+ ],
+ "geese": [],
+ "flap_hens": [],
+ "stones": [],
+ "pie_arcs": [],
+ "pies": [
+  10,
+  14,
+  34,
+  42,
+  48,
+  96,
+  154,
+  160,
+  176,
+  200,
+  248,
+  234
+ ],
+ "sky_pies": [
+  [
+   64,
+   11
+  ],
+  [
+   66,
+   12
+  ],
+  [
+   68,
+   11
+  ],
+  [
+   85,
+   5
+  ],
+  [
+   87,
+   5
+  ],
+  [
+   105,
+   13
+  ],
+  [
+   106,
+   14
+  ],
+  [
+   125,
+   10
+  ],
+  [
+   127,
+   10
+  ]
+ ],
+ "golden_pie": [
+  {
+   "x": 117,
+   "h": 15
+  }
+ ],
+ "dewey": [
+  44,
+  200
+ ],
+ "hooks": [
+  [
+   83,
+   9,
+   "sign"
+  ],
+  [
+   89,
+   9,
+   "sign"
+  ]
+ ],
+ "objects": [
+  {
+   "type": "jailhouse",
+   "x": 0
+  },
+  {
+   "type": "flowerpot",
+   "x": 22,
+   "h": 6
+  },
+  {
+   "type": "flowerpot",
+   "x": 30,
+   "h": 6
+  },
+  {
+   "type": "flowerpot",
+   "x": 38,
+   "h": 7
+  },
+  {
+   "type": "flowerpot",
+   "x": 46,
+   "h": 6
+  },
+  {
+   "type": "clothesline",
+   "x": 52,
+   "w": 8,
+   "h": 3,
+   "sheets": true
+  },
+  {
+   "type": "clothesline",
+   "x": 62,
+   "w": 8,
+   "h": 3.5,
+   "spring": true
+  },
+  {
+   "type": "clothesline",
+   "x": 72,
+   "w": 6,
+   "h": 3,
+   "sheets": true
+  },
+  {
+   "type": "building",
+   "x": 100,
+   "w": 10,
+   "h": 7,
+   "ladder": true,
+   "style": "brick"
+  },
+  {
+   "type": "building",
+   "x": 112,
+   "w": 10,
+   "h": 8,
+   "style": "blue"
+  },
+  {
+   "type": "building",
+   "x": 124,
+   "w": 10,
+   "h": 7,
+   "style": "cream"
+  },
+  {
+   "type": "chimney",
+   "x": 105,
+   "h": 7
+  },
+  {
+   "type": "chimney",
+   "x": 117,
+   "h": 8
+  },
+  {
+   "type": "zipline",
+   "x": 133,
+   "h": 7.6,
+   "x2": 150,
+   "h2": 1.6
+  },
+  {
+   "type": "grocer",
+   "x": 170,
+   "trigger": 142
+  },
+  {
+   "type": "patrol_car",
+   "x": 182
+  },
+  {
+   "type": "fire_bell",
+   "x": 226,
+   "h": 5
+  },
+  {
+   "type": "water_tower",
+   "x": 242,
+   "h": 8
+  },
+  {
+   "type": "checkpoint",
+   "x": 94
+  },
+  {
+   "type": "star",
+   "x": 105,
+   "h": 16
+  },
+  {
+   "type": "star",
+   "x": 1,
+   "h": 1.2
+  },
+  {
+   "type": "star",
+   "x": 86,
+   "h": 3.5
+  },
+  {
+   "type": "favor",
+   "npc": "aunt",
+   "item": "pie_tin",
+   "x": 156,
+   "item_x": 113,
+   "item_h": 8.8
+  },
+  {
+   "type": "powerup",
+   "x": 12,
+   "h": 1.2
+  },
+  {
+   "type": "powerup",
+   "x": 203,
+   "h": 1.2
+  }
+ ],
+ "flags": {},
+ "music": "main_street",
+ "earl_ai": {
+  "taunts": true,
+  "leaps": true,
+  "lasso_ok": true
+ },
+ "medals": {
+  "time": [
+   80,
+   120,
+   180
+  ]
+ },
+ "powerup_hens": [
+  [
+   16,
+   24
+  ],
+  [
+   40,
+   48
+  ],
+  [
+   206,
+   214
+  ],
+  [
+   214,
+   222
+  ]
+ ]
+}

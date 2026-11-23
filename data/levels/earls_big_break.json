@@ -1,0 +1,235 @@
+{
+ "id": "earls_big_break",
+ "theme": "night",
+ "role": "earl",
+ "width_tiles": 336,
+ "player_start": 8,
+ "earl_start": 26,
+ "ground": [
+  [
+   0,
+   262
+  ],
+  [
+   292,
+   336
+  ]
+ ],
+ "crates": [
+  {
+   "x": 136,
+   "stack": 0
+  },
+  {
+   "x": 190,
+   "stack": 0
+  },
+  {
+   "x": 190,
+   "stack": 1
+  },
+  {
+   "x": 200,
+   "stack": 0
+  }
+ ],
+ "platforms": [],
+ "hens": [],
+ "geese": [],
+ "flap_hens": [],
+ "pie_arcs": [],
+ "pies": [
+  16,
+  26,
+  44,
+  64,
+  84,
+  110,
+  130,
+  150,
+  176,
+  214,
+  240,
+  300,
+  312
+ ],
+ "golden_pie": [
+  {
+   "x": 190,
+   "h": 7.6
+  }
+ ],
+ "stones": [],
+ "dewey": [],
+ "flags": {},
+ "fence_x": 330,
+ "music": "earls_big_break",
+ "earl_ai": {},
+ "deputy_start": 4,
+ "objects": [
+  {
+   "type": "hiding_spot",
+   "x": 22,
+   "kind": "hedge"
+  },
+  {
+   "type": "watchman",
+   "x": 30,
+   "h": 5,
+   "sweep": [
+    58,
+    128
+   ],
+   "speed": 0.9
+  },
+  {
+   "type": "hiding_spot",
+   "x": 38,
+   "kind": "barrel"
+  },
+  {
+   "type": "checkpoint",
+   "x": 46
+  },
+  {
+   "type": "hiding_spot",
+   "x": 58,
+   "kind": "doorway"
+  },
+  {
+   "type": "watchman",
+   "x": 54,
+   "walk": [
+    54,
+    76
+   ]
+  },
+  {
+   "type": "hiding_spot",
+   "x": 70,
+   "kind": "basket"
+  },
+  {
+   "type": "checkpoint",
+   "x": 82
+  },
+  {
+   "type": "watchman",
+   "x": 90,
+   "h": 5,
+   "sweep": [
+    55,
+    122
+   ],
+   "speed": 1.1
+  },
+  {
+   "type": "hiding_spot",
+   "x": 96,
+   "kind": "barrel"
+  },
+  {
+   "type": "watchman",
+   "x": 102,
+   "h": 6,
+   "sweep": [
+    62,
+    130
+   ],
+   "speed": 0.8,
+   "phase": 2.0
+  },
+  {
+   "type": "hiding_spot",
+   "x": 108,
+   "kind": "hedge"
+  },
+  {
+   "type": "checkpoint",
+   "x": 114
+  },
+  {
+   "type": "bloodhound",
+   "x": 116,
+   "start": 120,
+   "quit": 226,
+   "sausages": [
+    126,
+    146,
+    180,
+    206
+   ],
+   "creek": [
+    160,
+    168
+   ]
+  },
+  {
+   "type": "checkpoint",
+   "x": 172
+  },
+  {
+   "type": "checkpoint",
+   "x": 228
+  },
+  {
+   "type": "freight_train",
+   "x": 236,
+   "cars": 4,
+   "trigger": 234,
+   "arms": [
+    258,
+    306
+   ]
+  },
+  {
+   "type": "star",
+   "x": 22,
+   "h": 1.0
+  },
+  {
+   "type": "star",
+   "x": 200,
+   "h": 4.2
+  },
+  {
+   "type": "star",
+   "x": 280,
+   "h": 7.2
+  },
+  {
+   "type": "favor",
+   "npc": "barber",
+   "item": "scissors",
+   "x": 230,
+   "item_x": 158,
+   "item_h": 1.0
+  }
+ ],
+ "deputy_waits": true,
+ "sky_pies": [
+  [
+   270,
+   5.2
+  ],
+  [
+   276,
+   5.4
+  ],
+  [
+   282,
+   5.4
+  ],
+  [
+   288,
+   5.2
+  ]
+ ],
+ "medals": {
+  "time": [
+   70,
+   110,
+   170
+  ]
+ }
+}

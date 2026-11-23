@@ -1,0 +1,14 @@
+# Godot 4 generated cache
+.godot/
+
+# macOS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated builds
+builds/
+dist/
