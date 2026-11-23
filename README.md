@@ -281,8 +281,8 @@ public repo, no secrets, no paid services):
    script and scene (`tools/ci/check_scripts.gd`); any script error fails.
 3. `tools/ci/godot_checks.sh bots`: the bot plays all 7 levels as the Sheriff, Dewey and Jim
    (21 runs, in parallel, under a minute).
-4. `tools/ci/godot_checks.sh pack`: exports `sheriff-of-pine-hollow.pck` for the handheld,
-   downloadable from the run's **Artifacts**.
+4. `tools/ci/godot_checks.sh pack` and `muos`: exports `sheriff-of-pine-hollow.pck` and lays out
+   the muOS SD-card package, downloadable from the run's **Artifacts** as `sheriff-muos-sd-card`.
 
 Run the same thing locally: `GODOT=/path/to/godot tools/ci/godot_checks.sh all`.
 
@@ -292,4 +292,18 @@ Godot 4.1 runtime on the device to load (`godot --main-pack sheriff-of-pine-holl
 It needs no export templates:
 `godot --headless --export-pack "Handheld (Linux ARM64)" build/handheld/sheriff-of-pine-hollow.pck`.
 The preset sets the `handheld` feature tag, so code can check `OS.has_feature("handheld")`.
-Packaging for a specific firmware (launcher script, controls) is not set up yet.
+
+### Installing on the RG35XX Pro (muOS)
+Needs PortMaster's **Godot/FRT 4.1.3** runtime on the card
+(`/mnt/mmc/MUOS/PortMaster/libs/frt_4.1.3.squashfs`).
+1. Download `sheriff-muos-sd-card` from a CI run's Artifacts and unzip it.
+2. Copy what's inside onto the **root** of the SD card (it merges into the existing folders):
+   - `ROMS/Ports/Sheriff of Pine Hollow.sh`: the launcher muOS lists under Ports
+   - `ports/mayberrymayhem/controller_bridge.py` and `sheriff-of-pine-hollow.pck`
+3. Launch it from Ports. **SELECT + START** quits. If it doesn't start, look at
+   `ports/mayberrymayhem/game.log` and `controller_bridge.log`.
+
+The FRT runtime doesn't read the gamepad, so `controller_bridge.py` turns the buttons into keys
+through a virtual keyboard: A = jump/confirm, B = pause/back, X = throw, Y = lasso,
+D-pad = move (up also jumps/climbs, down also dashes), START = confirm in menus.
+The sources are in `tools/handheld/muos/`, laid out like the SD card.

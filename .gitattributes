@@ -1,0 +1,4 @@
+# Shell and Python files run on the handheld: Windows line endings break them.
+*.sh text eol=lf
+*.py text eol=lf
+*.gptk text eol=lf

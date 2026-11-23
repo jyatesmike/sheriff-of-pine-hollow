@@ -65,11 +65,15 @@ jobs:
       - name: Export handheld .pck
         run: GODOT=~/godot/godot tools/ci/godot_checks.sh pack
 
-      - name: Upload handheld .pck
+      - name: Build muOS SD-card package
+        run: GODOT=~/godot/godot tools/ci/godot_checks.sh muos
+
+      # Unzip and copy its contents to the root of the RG35XX's SD card.
+      - name: Upload muOS SD-card package
         uses: actions/upload-artifact@v4
         with:
-          name: sheriff-of-pine-hollow-pck
-          path: build/handheld/sheriff-of-pine-hollow.pck
+          name: sheriff-muos-sd-card
+          path: build/muos-sd/
           retention-days: 14
 
       - name: Upload logs

@@ -8,6 +8,8 @@
 #           in parallel; fails if any run doesn't reach the cuffs
 #   pack    export build/handheld/sheriff-of-pine-hollow.pck (preset
 #           "Handheld (Linux ARM64)"); needs no export templates
+#   muos    build/muos-sd/: launcher + controller bridge + .pck laid out like
+#           the muOS SD card (tools/handheld/muos/), ready to copy
 set -uo pipefail
 cd "$(dirname "$0")/../.."
 GODOT="${GODOT:-godot}"
@@ -70,10 +72,30 @@ do_pack() {
 	ls -l build/handheld/sheriff-of-pine-hollow.pck
 }
 
+# SD-card layout for muOS: copy the contents of build/muos-sd/ to the card's root.
+do_muos() {
+	echo "== muOS package"
+	[ -s build/handheld/sheriff-of-pine-hollow.pck ] || do_pack || return 1
+	local src=tools/handheld/muos dst=build/muos-sd
+	bash -n "$src/ROMS/Ports/Sheriff of Pine Hollow.sh" || return 1
+	python3 -m py_compile "$src/ports/mayberrymayhem/controller_bridge.py" || return 1
+	rm -rf "$dst"
+	mkdir -p "$dst/ROMS/Ports" "$dst/ports/mayberrymayhem"
+	cp "$src/ROMS/Ports/Sheriff of Pine Hollow.sh" "$dst/ROMS/Ports/"
+	cp "$src/ports/mayberrymayhem/controller_bridge.py" "$dst/ports/mayberrymayhem/"
+	cp build/handheld/sheriff-of-pine-hollow.pck "$dst/ports/mayberrymayhem/"
+	if grep -lq $'\r' "$dst/ROMS/Ports/"*.sh "$dst/ports/mayberrymayhem/"*.py; then
+		echo "FAIL: Windows line endings (CRLF) in the launcher or bridge"
+		return 1
+	fi
+	(cd "$dst" && find . -type f | sort)
+}
+
 case "${1:-all}" in
 	import) do_import ;;
 	bots) do_bots ;;
 	pack) do_pack ;;
-	all) do_import && do_bots && do_pack ;;
-	*) echo "usage: $0 [import|bots|pack|all]"; exit 2 ;;
+	muos) do_muos ;;
+	all) do_import && do_bots && do_pack && do_muos ;;
+	*) echo "usage: $0 [import|bots|pack|muos|all]"; exit 2 ;;
 esac

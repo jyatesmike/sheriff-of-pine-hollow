@@ -270,5 +270,5 @@ Workers for sprites and sound should **use the existing free generators first**.
 | Doc fixes: Godot version, 18-row sheets, deputy rows file, template list, level 1-7 comments | Done |
 | Bug found by the validator: `earl/chase_bumped_one.mp3` was never played (code asks for `chase_bumped_1`) | Fixed by renaming |
 | Branch protection on `main` (PR + green CI required) | **You:** GitHub → Settings → Rules → Rulesets (no tool here can change repo settings) |
-| RG35XX packaging (launcher, controls) and on-device test | **Blocked:** needs firmware / install method / runtime answers |
-| Exit check: you run a CI-built `.pck` on the RG35XX | **Waiting on you** |
+| RG35XX packaging for muOS: launcher + controller bridge + `.pck` as an SD-card folder (CI artifact `sheriff-muos-sd-card`) | Done; based on your working setup; exit combo now stops the game itself; tested here with simulated pad input |
+| Exit check: you install the CI-built SD-card package on the RG35XX and play | **Waiting on you** |
