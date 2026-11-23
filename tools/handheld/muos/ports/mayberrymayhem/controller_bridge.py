@@ -23,6 +23,7 @@ import select
 import signal
 import struct
 import sys
+import time
 
 SOURCE = os.environ.get("PINE_PAD", "/dev/input/event3")
 UINPUT = "/dev/uinput"
@@ -65,13 +66,49 @@ def send_key(code, down):
         pressed.remove(code)
 
 
+def descendants(pid):
+    """pid and every process it started (children, grandchildren...)."""
+    parents = {}
+    for entry in os.listdir("/proc"):
+        if entry.isdigit():
+            try:
+                with open(f"/proc/{entry}/stat") as f:
+                    # the field after "(name)" is the state, then the parent pid
+                    ppid = int(f.read().rsplit(")", 1)[1].split()[1])
+            except (OSError, ValueError, IndexError):
+                continue
+            parents.setdefault(ppid, []).append(int(entry))
+    found, todo = [], [pid]
+    while todo:
+        p = todo.pop()
+        found.append(p)
+        todo.extend(parents.get(p, []))
+    return found
+
+
+def signal_all(pids, sig):
+    alive = []
+    for p in pids:
+        try:
+            os.kill(p, sig)
+            alive.append(p)
+        except ProcessLookupError:
+            pass
+    return alive
+
+
 def quit_game():
+    """Stop the game and everything it started; force it after 3 seconds."""
     target = GAME_PID if GAME_PID else os.getppid()
-    print("Exit combo pressed, stopping", target, flush=True)
-    try:
-        os.kill(target, signal.SIGTERM)
-    except ProcessLookupError:
-        pass
+    pids = descendants(target)
+    print("Exit combo pressed, stopping", pids, flush=True)
+    signal_all(pids, signal.SIGTERM)
+    for _ in range(30):
+        time.sleep(0.1)
+        if not signal_all(pids, 0):   # signal 0 only checks they still exist
+            return
+    print("Still running, force-stopping", pids, flush=True)
+    signal_all(pids, signal.SIGKILL)
 
 
 src = os.open(SOURCE, os.O_RDONLY | os.O_NONBLOCK)
