@@ -1,0 +1,81 @@
+# Free checks on every push and pull request (public repo: Actions minutes cost nothing).
+# No secrets are used here. Nothing in this workflow calls a paid API.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: 4.1.4-stable
+  # SHA-512 of Godot_v4.1.4-stable_linux.x86_64.zip from the official SHA512-SUMS.txt
+  GODOT_SHA512: 147e2fb288cb914227396ca824dd4b9b3c5a927023ed04493f3abf2864411f1de514670e9f42e3efa4d911e24cf14b731482bfcd9aed8311febd04aee2d47d74
+
+jobs:
+  validate:
+    name: Data and art files
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 tools/validate.py
+
+  godot:
+    name: Godot import, bot runs, handheld pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/godot
+          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+
+      - name: Download Godot ${{ env.GODOT_VERSION }}
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot && cd ~/godot
+          zip="Godot_v${GODOT_VERSION}_linux.x86_64.zip"
+          curl -sSLf -o "$zip" "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/$zip"
+          echo "${GODOT_SHA512}  $zip" | sha512sum -c -
+          unzip -q "$zip" && rm "$zip"
+          mv Godot_v*_linux.x86_64 godot && chmod +x godot
+
+      - name: Import (fail on script errors)
+        run: GODOT=~/godot/godot tools/ci/godot_checks.sh import
+
+      - name: Bot plays every level as every hero
+        run: GODOT=~/godot/godot tools/ci/godot_checks.sh bots
+
+      - name: Export handheld .pck
+        run: GODOT=~/godot/godot tools/ci/godot_checks.sh pack
+
+      - name: Upload handheld .pck
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheriff-of-pine-hollow-pck
+          path: build/handheld/sheriff-of-pine-hollow.pck
+          retention-days: 14
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-logs
+          path: build/ci/
+          retention-days: 7

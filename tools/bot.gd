@@ -1,7 +1,7 @@
 # Bot used by tools/test_bot_run.gd (loaded at runtime so autoloads exist).
 # Plays any level: runs right, jumps gaps/walls/hens, waits for and rides
 # logs, jumps corks, throws rocks at Earl, and dashes into him in showdowns.
-#   godot --headless -s tools/test_bot_run.gd -- <level 1-5> [god]
+#   godot --headless -s tools/test_bot_run.gd -- <level 1-7> [god]
 # "god" keeps the bot invulnerable, to prove a level can be finished.
 extends Node
 

@@ -21,22 +21,24 @@ The user's reference screenshot (kept outside the repo) sets the look:
 Use only the *style*. Characters, names, signs and places stay this game's own.
 
 ## Characters — `art/sprites/<name>.png`
-Sheriff, Earl, Dewey and the deputy share one layout. Each frame is **48×64**, with the feet
-on the bottom row and the body centred. The sheet is **8 frames wide (384 px)**, and each
-row is one animation, with frames left to right:
+Sheriff, Earl, Dewey, Jim, the deputy and the townsfolk share one layout. Each frame is
+**48×64**, with the feet on the bottom row and the body centred. The sheet is **8 frames wide
+(384 px) and 18 rows tall (1152 px)**, and each row is one animation, with frames left to right:
 
 | Row | Animation | Frames | | Row | Animation | Frames |
 |---|---|---|---|---|---|---|
-| 0 | idle | 4 | | 8 | victory | 6 |
-| 1 | run | 8 | | 9 | slide (dash) | 3 |
-| 2 | jump | 1 | | 10 | tiphat | 4 |
-| 3 | fall | 1 | | 11 | taunt | 4 |
-| 4 | land | 2 | | 12 | stunned | 2 |
-| 5 | skid | 2 | | 13 | cuffed | 2 |
-| 6 | throw | 4 | | 14 | aim (popgun) | 3 |
-| 7 | hurt | 2 | | 15 | fumble | 4 |
+| 0 | idle | 4 | | 9 | slide (dash) | 3 |
+| 1 | run | 8 | | 10 | tiphat | 4 |
+| 2 | jump | 1 | | 11 | taunt | 4 |
+| 3 | fall | 1 | | 12 | stunned | 2 |
+| 4 | land | 2 | | 13 | cuffed | 2 |
+| 5 | skid | 2 | | 14 | aim (popgun) | 3 |
+| 6 | throw | 4 | | 15 | fumble | 4 |
+| 7 | hurt | 2 | | 16 | climb | 4 |
+| 8 | victory | 6 | | 17 | climb_idle | 1 |
 
-Frame rates and looping are in `data/sprites.json`.
+Frame rates and looping are in `data/sprites.json`. `python3 tools/validate.py` checks every
+sheet against that file (size, rows, transparency).
 
 ## Animals — `art/sprites/hen.png`, `goose.png`
 Frames are **32×24** and face right, with the feet on the bottom row. The rows are:

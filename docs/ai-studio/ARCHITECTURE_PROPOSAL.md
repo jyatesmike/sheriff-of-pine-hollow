@@ -1,7 +1,8 @@
 # Pine Hollow AI Studio: Inspection Report, Architecture Proposal and Phased Plan
 
-Status: **PROPOSAL, awaiting approval.** Nothing in the game was changed. No paid API calls were made.
-No agent framework was installed.
+Status: **APPROVED 2026-11-23.** Decisions: build on this **Godot 4.1** repo; paid-API cap
+**$10/month** across all providers. Phase 1 is in progress (see "Phase 1 status" at the end).
+No paid API calls have been made. No agent framework has been installed.
 Inspected: `jyatesmike/sheriff-of-pine-hollow` @ `f29c73d` ("Initial Sheriff of Pine Hollow project"), 2026-11-23.
 
 ---
@@ -253,3 +254,21 @@ Workers for sprites and sound should **use the existing free generators first**.
 2. Answers to the four RG35XX questions in §4.
 3. Your monthly cap and per-role caps (or accept the suggested $10/month).
 4. OK to create the private `pine-hollow-studio` repo (Phase 2) and to change game-repo settings and CI (Phase 1).
+
+---
+
+## Phase 1 status
+
+| Item | Status |
+|---|---|
+| CI workflow `.github/workflows/ci.yml` (free, no secrets, Godot 4.1.4 pinned by SHA-512) | Done |
+| `tools/validate.py`: sheets, props, tiles, backgrounds, levels, name slots, audio names | Done; tested by breaking 8 things on purpose, all caught |
+| `tools/ci/check_scripts.gd`: compiles every script and scene (the editor alone only compiles autoloads) | Done; a broken script and its 4 dependents were caught |
+| Bot runs: 7 levels × 3 heroes in god mode | Done; 21/21 pass, about 1 minute in total |
+| Handheld `.pck` export (preset "Handheld (Linux ARM64)", no templates needed) | Done; 9 MB, runs standalone, CI uploads it as an artifact |
+| `.gitignore` covers `build/` | Done |
+| Doc fixes: Godot version, 18-row sheets, deputy rows file, template list, level 1-7 comments | Done |
+| Bug found by the validator: `earl/chase_bumped_one.mp3` was never played (code asks for `chase_bumped_1`) | Fixed by renaming |
+| Branch protection on `main` (PR + green CI required) | **You:** GitHub → Settings → Rules → Rulesets (no tool here can change repo settings) |
+| RG35XX packaging (launcher, controls) and on-device test | **Blocked:** needs firmware / install method / runtime answers |
+| Exit check: you run a CI-built `.pck` on the RG35XX | **Waiting on you** |
