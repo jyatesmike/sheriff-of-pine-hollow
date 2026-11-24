@@ -80,6 +80,7 @@ const POWERUPS := {
 #  start      : what Earl shouts as the level begins
 #  win        : said when you win     lose : said when you lose
 #  dewey      : Dewey's cheers, in the order you pass him
+#  taunts     : (optional) extra lines Earl shouts in this episode, mixed in with EARL_TAUNTS
 const LEVELS := {
 	"main_street": {
 		"name": "Main Street",
@@ -145,6 +146,7 @@ const LEVELS := {
 		"lose": "Better luck at the ring toss, {sheriff}!",
 		"dewey": ["Ride the Ferris wheel over the fence, {sheriff}!"],
 		"vehicle": "Bumper cars! Catch me if you can!",
+		"taunts": ["Catch me on the Ferris wheel, {sheriff}!", "Save me a slice of pie, {sheriff}!"],
 	},
 	"last_train": {
 		"name": "The Last Train",

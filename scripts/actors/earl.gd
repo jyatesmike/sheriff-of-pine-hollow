@@ -193,8 +193,15 @@ func _begin_taunt() -> void:
 	state = State.TAUNT
 	timer = 80
 	taunt_cd = 420 + randi() % 240
-	var k := randi() % GameText.EARL_TAUNTS.size()
-	say(GameText.EARL_TAUNTS[k], 90, "taunt_%d" % (k + 1))
+	# The general taunts, plus the episode's own (GameText.LEVELS.<id>.taunts).
+	var lid := Game.level_id()
+	var own: Array = GameText.LEVELS.get(lid, {}).get("taunts", [])
+	var k := randi() % (GameText.EARL_TAUNTS.size() + own.size())
+	if k < GameText.EARL_TAUNTS.size():
+		say(GameText.EARL_TAUNTS[k], 90, "taunt_%d" % (k + 1))
+	else:
+		var j := k - GameText.EARL_TAUNTS.size()
+		say(own[j], 90, "%s_taunt_%d" % [lid, j + 1])
 
 
 func _taunt() -> void:
