@@ -164,6 +164,9 @@ const EARL_TAUNTS := [
 	"Can't catch me, {sheriff}!", "I'll be back for supper!", "Too slow, lawman!",
 	"Mind the chickens!", "Tell the judge I said hey!",
 ]
+const EARL_TAUNTS_FAIR := [
+	"Catch me on the Ferris wheel, {sheriff}!", "Save me a slice of pie, {sheriff}!",
+]
 const EARL_THROWS := ["Heads up!", "Catch!", "Think fast, {sheriff}!"]
 const EARL_HIDES := "Shhh..."
 const EARL_PEEKABOO := "Peekaboo!"
