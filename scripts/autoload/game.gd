@@ -98,7 +98,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		restart_level()
 		get_viewport().set_input_as_handled()
 	elif event is InputEventKey and event.pressed and not event.echo and _in_level():
-		# Number keys 1-5 jump straight to a level (until the level-select map)
+		# Number keys 1-7 jump straight to a level
 		var n: int = event.physical_keycode - KEY_1
 		if n >= 0 and n < LEVELS.size():
 			go_to_level(n)

@@ -29,7 +29,8 @@ objects list). Their lines (power-up, hurt, win per episode, birds, roping Earl)
 PixelLab art is in: drop his GIFs in `art/source/pixellab/jim/` like the Sheriff's.
 
 ## Run it
-1. Install Godot 4.3 or newer (standard build, not .NET): https://godotengine.org/download
+1. Install **Godot 4.1.x** (4.1.3 matches the handheld and is what CI uses; standard build, not .NET):
+   https://github.com/godotengine/godot/releases/tag/4.1.3-stable
 2. Open Godot → **Import** → pick this folder's `project.godot` → **Import & Edit**.
 3. Press **F5** (Run Project).
 
@@ -79,7 +80,7 @@ replaces the main key for that action (the other default keys still work). RESET
 everything back. Saved with your other settings.
 
 ## Replacing the character art
-`art_templates/` has a template for each character (sheriff, earl, deputy, dewey): an empty sheet
+`art_templates/` has a template for the sheriff, earl and deputy: an empty sheet
 with the exact grid the game expects, the current art faintly underneath as a size guide, and a
 `<name>_rows.txt` listing what goes in each row (idle, run, jump...). Frames are 48 x 64 px, feet
 on the bottom edge of the frame, facing RIGHT (the game flips them for left).
@@ -128,9 +129,10 @@ The same setting covers the rest of the visual polish:
 - **Iris wipe** between scenes (`shaders/iris.gdshader`), the painted title screen with the
   hanging sign, and comic-book panels for the episode intros.
 
-## Exporting (web, Mac, Windows)
-`export_presets.cfg` has three presets: **Web** (single-threaded, so it runs on itch.io without
-special server headers), **macOS** (universal app, ad-hoc signed) and **Windows**.
+## Exporting (web, Mac, Windows, handheld)
+`export_presets.cfg` has four presets: **Web** (single-threaded, so it runs on itch.io without
+special server headers), **macOS** (universal app, ad-hoc signed), **Windows**, and
+**Handheld (Linux ARM64)** (see "Handheld build" below).
 1. In Godot: Editor > Manage Export Templates > Download and Install (once, about 1 GB).
 2. Project > Export, pick a preset, Export Project. Output goes into `build/`.
 - **itch.io:** zip the files in `build/web/` (index.html at the top level), upload as an HTML game,
@@ -267,3 +269,41 @@ Text may use `{town}`, `{sheriff}`, `{earl}`, `{dewey}`, `{deputy}` (or upper-ca
 
 Headless test: `godot --headless -s tools/test_bot_run.gd -- 3 god` plays level 3
 (exit code 0 = won; `god` makes the bot invulnerable to prove the level can be finished).
+`CHAR=dewey` or `CHAR=jim` in front plays as someone else.
+
+## Automatic checks (CI)
+Every push and pull request runs `.github/workflows/ci.yml` on GitHub Actions (free for this
+public repo, no secrets, no paid services):
+1. `python3 tools/validate.py`: sprite sheet sizes vs `data/sprites.json`, props atlas,
+   tiles and backgrounds, every level's theme/music/object types, `{name}` slots in
+   `game_text.gd`, and audio file names.
+2. `tools/ci/godot_checks.sh import`: opens the project in Godot 4.1.3 and loads every
+   script and scene (`tools/ci/check_scripts.gd`); any script error fails.
+3. `tools/ci/godot_checks.sh bots`: the bot plays all 7 levels as the Sheriff, Dewey and Jim
+   (21 runs, in parallel, under a minute).
+4. `tools/ci/godot_checks.sh pack` and `muos`: exports `sheriff-of-pine-hollow.pck` and lays out
+   the muOS SD-card package, downloadable from the run's **Artifacts** as `sheriff-muos-sd-card`.
+
+Run the same thing locally: `GODOT=/path/to/godot tools/ci/godot_checks.sh all`.
+
+## Handheld build (RG35XX Pro and other ARM64 Linux handhelds)
+The **Handheld (Linux ARM64)** export preset makes a `.pck`: the whole game in one file, for a
+Godot 4.1 runtime on the device to load (`godot --main-pack sheriff-of-pine-hollow.pck`).
+It needs no export templates:
+`godot --headless --export-pack "Handheld (Linux ARM64)" build/handheld/sheriff-of-pine-hollow.pck`.
+The preset sets the `handheld` feature tag, so code can check `OS.has_feature("handheld")`.
+
+### Installing on the RG35XX Pro (muOS)
+Needs PortMaster's **Godot/FRT 4.1.3** runtime on the card
+(`/mnt/mmc/MUOS/PortMaster/libs/frt_4.1.3.squashfs`).
+1. Download `sheriff-muos-sd-card` from a CI run's Artifacts and unzip it.
+2. Copy what's inside onto the **root** of the SD card (it merges into the existing folders):
+   - `ROMS/Ports/Sheriff of Pine Hollow.sh`: the launcher muOS lists under Ports
+   - `ports/mayberrymayhem/controller_bridge.py` and `sheriff-of-pine-hollow.pck`
+3. Launch it from Ports. **SELECT + START** quits. If it doesn't start, look at
+   `ports/mayberrymayhem/game.log` and `controller_bridge.log`.
+
+The FRT runtime doesn't read the gamepad, so `controller_bridge.py` turns the buttons into keys
+through a virtual keyboard: A = jump/confirm, B = pause/back, X = throw, Y = lasso,
+D-pad = move (up also jumps/climbs, down also dashes), START = confirm in menus.
+The sources are in `tools/handheld/muos/`, laid out like the SD card.

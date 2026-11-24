@@ -12,3 +12,9 @@
 # Generated builds
 builds/
 dist/
+
+# Exports (export_presets.cfg writes to build/) and CI logs
+build/
+
+# Python bytecode
+__pycache__/

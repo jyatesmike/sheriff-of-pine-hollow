@@ -1,5 +1,5 @@
 # Headless smoke test: a simple bot plays a level to the end.
-#   godot --headless -s tools/test_bot_run.gd -- <level 1-5> [god]
+#   godot --headless -s tools/test_bot_run.gd -- <level 1-7> [god]
 # Exits 0 if the level is won, 1 otherwise. "god" = bot can't be hurt
 # (proves the level can be finished). The bot itself lives in
 # tools/bot.gd and is loaded at runtime, after the autoloads exist.
