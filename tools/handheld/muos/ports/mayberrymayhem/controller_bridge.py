@@ -13,9 +13,14 @@ Buttons -> keys -> game actions:
     B      -> Esc    -> pause (and back in menus)
     X      -> F      -> throw / cast
     Y      -> E      -> lasso
+    L1     -> Shift  -> dash / slide (tackle Earl)
+    R1     -> R      -> restart the level
     SELECT -> Tab
     START  -> Enter  -> confirm in menus
     D-pad  -> arrows -> move; up also jumps/climbs, down also dashes
+
+Buttons not in the list are written to controller_bridge.log when pressed,
+so a button with a different code on another pad can be found and added.
 """
 import fcntl
 import os
@@ -35,6 +40,8 @@ KEYS = {
     305: 1,    # B -> Escape
     307: 33,   # X -> F (throw)
     308: 18,   # Y -> E (lasso)
+    310: 42,   # L1 -> Left Shift (dash)
+    311: 19,   # R1 -> R (restart)
     314: 15,   # SELECT -> Tab
     315: 28,   # START -> Enter
 }
@@ -86,12 +93,22 @@ def descendants(pid):
     return found
 
 
+def is_zombie(pid):
+    """Exited but not yet collected by its parent: it no longer runs."""
+    try:
+        with open(f"/proc/{pid}/stat") as f:
+            return f.read().rsplit(")", 1)[1].split()[0] == "Z"
+    except (OSError, IndexError):
+        return True
+
+
 def signal_all(pids, sig):
     alive = []
     for p in pids:
         try:
             os.kill(p, sig)
-            alive.append(p)
+            if not is_zombie(p):
+                alive.append(p)
         except ProcessLookupError:
             pass
     return alive
@@ -165,6 +182,9 @@ try:
                     raise SystemExit
 
                 send_key(KEYS[code], value != 0)
+
+            elif event_type == 1 and value == 1:
+                print("Unmapped button code", code, flush=True)
 
             # D-pad axes
             elif event_type == 3 and code in HATS:

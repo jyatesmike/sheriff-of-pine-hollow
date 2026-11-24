@@ -305,5 +305,6 @@ Needs PortMaster's **Godot/FRT 4.1.3** runtime on the card
 
 The FRT runtime doesn't read the gamepad, so `controller_bridge.py` turns the buttons into keys
 through a virtual keyboard: A = jump/confirm, B = pause/back, X = throw, Y = lasso,
-D-pad = move (up also jumps/climbs, down also dashes), START = confirm in menus.
+L1 = dash/slide, R1 = restart, D-pad = move (up also jumps/climbs, down also dashes),
+START = confirm in menus. Any other button's code is written to `controller_bridge.log`.
 The sources are in `tools/handheld/muos/`, laid out like the SD card.
