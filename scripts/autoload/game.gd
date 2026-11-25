@@ -64,14 +64,25 @@ var ui_scale := 1         # HUD / menu scale in the handheld display
 func _setup_display() -> void:
 	if OS.has_feature("web") or DisplayServer.get_name() == "headless":
 		return
-	if not settings.get("pixel_perfect", true):
-		return
-	var s := DisplayServer.screen_get_size()
-	# Handheld-sized screens only (a laptop keeps the normal, scaled picture).
-	if s.x <= 0 or s.y <= 0 or s.x > 1024 or s.y > 768:
-		return
-	var k := mini(s.x / 320, s.y / 180)    # show at least 320 x 180 of the world
-	if k < 2:
+	var screen := DisplayServer.screen_get_size()
+	var window := DisplayServer.window_get_size()
+	# The handheld build (export preset "Handheld (Linux ARM64)") carries the
+	# "handheld" feature tag, in case the runtime reports an odd screen size.
+	var tagged := OS.has_feature("handheld")
+	var s := Vector2i.ZERO
+	for c in [screen, window]:          # the first one that is handheld-sized
+		if c.x > 0 and c.y > 0 and c.x <= 1024 and c.y <= 768:
+			s = c
+			break
+	if s == Vector2i.ZERO and tagged:
+		s = Vector2i(640, 480)          # the RG35XX's screen
+	var k := mini(s.x / 320, s.y / 180) if s != Vector2i.ZERO else 0    # show at least 320 x 180 of the world
+	var on: bool = settings.get("pixel_perfect", true) and k >= 2
+	# One line in the log (the muOS launcher writes it to game.log) to see what the device reports.
+	print("[display] driver=%s screen=%s window=%s handheld_tag=%s -> handheld display %s%s" % [
+		DisplayServer.get_name(), screen, window, tagged, "ON" if on else "off",
+		(" at %s, world %dx" % [s, k]) if on else ""])
+	if not on:
 		return
 	handheld = true
 	world_scale = k
