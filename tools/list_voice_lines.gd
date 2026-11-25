@@ -5,7 +5,9 @@
 @tool
 extends SceneTree
 
-const LEVELS := ["main_street", "chicken_run", "rock_creek", "gone_fishin", "earls_big_break"]
+# Same order as Game.LEVELS (this runs without the autoloads).
+const LEVELS := ["main_street", "chicken_run", "rock_creek", "gone_fishin", "earls_big_break",
+	"county_fair", "last_train"]
 
 
 func _initialize() -> void:
@@ -25,6 +27,9 @@ static func write() -> void:
 		var dw: Array = t.get("dewey", [])
 		for i in dw.size():
 			by_who["dewey"].append(["%s_%d" % [id, i + 1], dw[i]])
+		var own: Array = t.get("taunts", [])   # this episode's own Earl taunts (earl.gd)
+		for i in own.size():
+			by_who["earl"].append(["%s_taunt_%d" % [id, i + 1], own[i]])
 	_list(by_who.earl, "taunt", GameText.EARL_TAUNTS)
 	_list(by_who.earl, "throw", GameText.EARL_THROWS)
 	_list(by_who.earl, "tackled", GameText.EARL_TACKLED)
@@ -56,6 +61,7 @@ static func write() -> void:
 		for pair in by_who[who]:
 			if str(pair[1]).strip_edges() != "":
 				out += "| `%s.mp3` | %s |\n" % [pair[0], _names(str(pair[1]))]
+	out += _hero_sections()
 	var f := FileAccess.open("res://audio/voices/LINES.md", FileAccess.WRITE)
 	f.store_string(out)
 	print("wrote audio/voices/LINES.md")
@@ -70,3 +76,28 @@ static func _names(s: String) -> String:
 	for k in GameText.NAMES:
 		s = s.replace("{" + k + "}", GameText.NAMES[k]).replace("{" + k.to_upper() + "}", GameText.NAMES[k].to_upper())
 	return s.replace("|", "/")
+
+
+## The playable heroes' own lines (level.gd hero_line(), lasso.gd), from GameText.HEROES.
+static func _hero_sections() -> String:
+	var out := ""
+	for hero in ["dewey", "jim"]:
+		var h: Dictionary = GameText.HEROES.get(hero, {})
+		var title: String = ("When you play as " if hero == "dewey" else "") + GameText.NAMES[hero]
+		out += "\n## %s  →  `audio/voices/%s/`\n\n| File | Line |\n|---|---|\n" % [title, hero]
+		var bird: Array = h.get("bird", [])
+		if not bird.is_empty():
+			out += "| `%s.mp3` | %s (bowling over a bird while powered up) |\n" % [
+				"shazam" if hero == "dewey" else "bird", _names(bird[0])]
+		if str(h.get("powerup", "")) != "":
+			out += "| `powerup.mp3` | %s |\n" % _names(h.powerup)
+		var hurt: Array = h.get("hurt", [])
+		if not hurt.is_empty():
+			out += "| `hurt.mp3` | %s (one of the hurt lines) |\n" % _names(hurt[0])
+		if str(h.get("rope_earl", "")) != "":
+			out += "| `rope_earl.mp3` | %s |\n" % _names(h.rope_earl)
+		out += "| `<episode>_win.mp3` | the win line for that episode, e.g. `main_street_win.mp3` |\n"
+	out += "\nWhen you play as %s, the %s takes over %s's street tips, so those\n" % [
+		GameText.NAMES.dewey, GameText.NAMES.sheriff, GameText.NAMES.dewey]
+	out += "lines (`main_street_1.mp3` and so on) play from `audio/voices/sheriff/`.\n"
+	return out

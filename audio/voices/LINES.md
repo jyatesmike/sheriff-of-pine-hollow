@@ -14,6 +14,8 @@ Made by `tools/list_voice_lines.gd`; run it again after changing any text.
 | `chicken_run_win.mp3` | Next time, leave the hens out of it. |
 | `rock_creek_win.mp3` | You throw a mean rock, Sheriff. |
 | `gone_fishin_win.mp3` | You're all wet, Earl. |
+| `county_fair_win.mp3` | Ride's over, Earl. |
+| `last_train_win.mp3` | End of the line, Earl. For real this time. |
 | `bell_hint.mp3` | Somebody ring that fire bell! |
 
 ## Earl  →  `audio/voices/earl/`
@@ -30,6 +32,12 @@ Made by `tools/list_voice_lines.gd`; run it again after changing any text.
 | `gone_fishin_lose.mp3` | Better luck next cast, Sheriff! |
 | `earls_big_break_start.mp3` | So long, jailhouse! |
 | `earls_big_break_win.mp3` | Free as a bird... for now. |
+| `county_fair_start.mp3` | Whee! Cotton candy's on you, Sheriff! |
+| `county_fair_lose.mp3` | Better luck at the ring toss, Sheriff! |
+| `county_fair_taunt_1.mp3` | Catch me on the Ferris wheel, Sheriff! |
+| `county_fair_taunt_2.mp3` | Save me a slice of pie, Sheriff! |
+| `last_train_start.mp3` | All aboard the Earl Express, Sheriff! |
+| `last_train_lose.mp3` | Toot toot, Sheriff! See ya next stop! |
 | `taunt_1.mp3` | Can't catch me, Sheriff! |
 | `taunt_2.mp3` | I'll be back for supper! |
 | `taunt_3.mp3` | Too slow, lawman! |
@@ -69,6 +77,7 @@ Made by `tools/list_voice_lines.gd`; run it again after changing any text.
 | `chicken_run_2.mp3` | Never turn your back on that goat! |
 | `rock_creek_1.mp3` | Swing across on them hooks with your rope, Sheriff! |
 | `gone_fishin_1.mp3` | Them docks sink if you stand still, Sheriff! |
+| `county_fair_1.mp3` | Ride the Ferris wheel over the fence, Sheriff! |
 
 ## Deputy Plum  →  `audio/voices/deputy/`
 
@@ -88,21 +97,21 @@ Made by `tools/list_voice_lines.gd`; run it again after changing any text.
 
 | File | Line |
 |---|---|
-| `shazam.mp3` | SHAZAM! (bowling over a bird with the Lightning Soda) |
+| `shazam.mp3` | SHAZAM! (bowling over a bird while powered up) |
 | `powerup.mp3` | Lightning Soda! Whoo-ee! |
-| `hurt.mp3` | Owww-eee! (one of his hurt lines) |
+| `hurt.mp3` | Owww-eee! (one of the hurt lines) |
 | `rope_earl.mp3` | Hold still, Earl! Bzzt! |
-| `<episode>_win.mp3` | his win line for that episode, e.g. `main_street_win.mp3` |
+| `<episode>_win.mp3` | the win line for that episode, e.g. `main_street_win.mp3` |
 
 ## Jim  →  `audio/voices/jim/`
 
 | File | Line |
 |---|---|
-| `bird.mp3` | Coming through! (scattering birds on the mower) |
+| `bird.mp3` | Coming through! (bowling over a bird while powered up) |
 | `powerup.mp3` | Fire up the zero-turn! |
-| `hurt.mp3` | Error four-oh-four: dignity not found! |
+| `hurt.mp3` | Error four-oh-four: dignity not found! (one of the hurt lines) |
 | `rope_earl.mp3` | Hold still, Earl. You need a rinse. |
-| `<episode>_win.mp3` | his win line for that episode, e.g. `main_street_win.mp3` |
+| `<episode>_win.mp3` | the win line for that episode, e.g. `main_street_win.mp3` |
 
 When you play as Dewey, the Sheriff takes over Dewey's street tips, so those
 lines (`main_street_1.mp3` and so on) play from `audio/voices/sheriff/`.

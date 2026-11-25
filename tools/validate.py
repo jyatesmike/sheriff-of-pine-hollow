@@ -213,6 +213,40 @@ def check_text() -> None:
                 err(f"{rel(path)}:{n}: unknown name slot {{{slot}}} (Names.fmt() fills {', '.join(sorted(NAME_SLOTS))}, sign0-{signs - 1})")
 
 
+# Dict constants whose second-level keys are field names (level -> fields...),
+# and those whose first-level keys are field names (menu entries).
+FIELDS_AT_DEPTH_2 = ("LEVELS", "HEROES", "FAVORS")
+FIELDS_AT_DEPTH_1 = ("MENU", "UI")
+
+
+def check_text_is_used() -> None:
+    """Text the game never reads never appears on screen: every constant in
+    game_text.gd must be used as GameText.NAME, and every field name inside
+    LEVELS/HEROES/FAVORS/MENU/UI must be read somewhere in the code."""
+    path = ROOT / "scripts/config/game_text.gd"
+    text = path.read_text()
+    code = "\n".join(p.read_text() for d in ("scripts", "tools") for p in sorted((ROOT / d).rglob("*.gd"))
+                     if p != path)
+    for m in re.finditer(r"^const ([A-Z][A-Z0-9_]*)\b", text, re.M):
+        name = m.group(1)
+        if not re.search(rf"\bGameText\.{name}\b", code):
+            line = text[:m.start()].count("\n") + 1
+            err(f"{rel(path)}:{line}: {name} is never used by the game's code, so its text never appears "
+                f"(add the lines to an existing list instead, or change the code to read it)")
+    # Names the code builds, like m["ctl_" + action]: any field starting with such a prefix counts as read.
+    built_prefixes = tuple(re.findall(r"\"([a-z0-9_]+_)\"\s*\+", code))
+    for const, depth in [(c, 2) for c in FIELDS_AT_DEPTH_2] + [(c, 1) for c in FIELDS_AT_DEPTH_1]:
+        m = re.search(rf"^const {const} := \{{(.*?)^\}}", text, re.S | re.M)
+        if not m:
+            continue
+        start_line = text[:m.start()].count("\n") + 1
+        for i, line in enumerate(m.group(1).splitlines()):
+            k = re.match(r"^\t{%d}\"([a-z0-9_]+)\":" % depth, line)
+            if k and not k.group(1).startswith(built_prefixes) and not re.search(rf"[\"'.]{k.group(1)}\b", code):
+                err(f"{rel(path)}:{start_line + i}: field \"{k.group(1)}\" in {const} is never read by the "
+                    f"game's code, so its text never appears")
+
+
 # --- audio ----------------------------------------------------------------------
 def check_audio() -> None:
     sound_files = ROOT / "scripts/config/sound_files.gd"
@@ -248,6 +282,7 @@ def main() -> int:
     areas = check_tiles_and_backgrounds()
     check_levels(areas)
     check_text()
+    check_text_is_used()
     check_audio()
     for w in warnings:
         print(f"WARN  {w}")
