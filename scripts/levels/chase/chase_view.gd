@@ -275,7 +275,7 @@ func _warnings() -> void:
 	var t := Time.get_ticks_msec() / 1000.0
 	var bob := 2.0 * sin(t * 14.0)
 	for v in c.incoming():
-		var ex: float = c.cam.position.x + 240.0 - 16.0
+		var ex: float = c.cam.position.x + c.half_width() - 16.0
 		var p: Vector2 = c.screen_point(ex, v.ly) + Vector2(bob, -16)
 		var mine: bool = v.lane == c.lane
 		var col := Color("ff4a3a") if mine else Color("ffd23f")

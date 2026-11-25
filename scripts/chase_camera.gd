@@ -38,7 +38,9 @@ func setup(p: Player, width_px: float, ground_y: float) -> void:
 	world_width = width_px
 	limit_left = 0
 	limit_right = int(width_px)
-	limit_bottom = int(ground_y + 62.0)
+	# How much of the road below the ground line may show. The handheld's taller
+	# view would otherwise spend a quarter of the screen on it.
+	limit_bottom = int(ground_y + (40.0 if Game.handheld else 62.0))
 	limit_top = -2000
 	process_callback = Camera2D.CAMERA2D_PROCESS_PHYSICS
 	position_smoothing_enabled = false

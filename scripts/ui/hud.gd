@@ -10,12 +10,22 @@ const PANEL_EDGE := Color("c8901c")
 
 var level: Level
 var canvas: Node2D
+# The screen the HUD lays itself out on (Game.ui_size(): 480x270, or the full
+# handheld screen). Top-left items stay put; centred, right and bottom items
+# follow the real edges. dx/dy: how much bigger it is than 480x270, halved.
+var W := 480.0
+var H := 270.0
+var CX := 240.0
+var dx := 0.0
+var dy := 0.0
 var debug := false
 var intro_t := 4.0
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	scale = Vector2.ONE * Game.ui_scale
+	_measure()
 	canvas = Node2D.new()
 	add_child(canvas)
 	canvas.draw.connect(_on_draw)
@@ -23,6 +33,15 @@ func _ready() -> void:
 
 func setup(l: Level) -> void:
 	level = l
+
+
+func _measure() -> void:
+	var sz := Game.ui_size()
+	W = sz.x
+	H = sz.y
+	CX = W / 2.0
+	dx = (W - 480.0) / 2.0
+	dy = (H - 270.0) / 2.0
 
 
 var pause_sel := 0
@@ -57,8 +76,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			m.pause_restart: Game.restart_level()
 			m.pause_menu: Game.go_to_title()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var i := int((event.position.y - 117.0) / 12.0)
-		if i >= 0 and i < items.size() and absf(event.position.x - 240.0) < 90.0:
+		var pos: Vector2 = event.position / Game.ui_scale
+		var i := int((pos.y - (117.0 + dy)) / 12.0)
+		if i >= 0 and i < items.size() and absf(pos.x - CX) < 90.0:
 			pause_sel = i
 			var ev := InputEventAction.new()
 			ev.action = "jump"
@@ -78,6 +98,7 @@ func _process(delta: float) -> void:
 func _on_draw() -> void:
 	if level == null:
 		return
+	_measure()
 	var p := level.player
 	_hud_portrait(level.hero)
 	for i in Player.MAX_HEARTS:
@@ -109,50 +130,50 @@ func _on_draw() -> void:
 	if level.in_chase():
 		var c: Node2D = level.chase
 		_meter(c.closeness(), GameText.UI.milk_truck)
-		PixelFont.draw_centered(canvas, "BUMPS %d/3" % c.bumps, 240, 24, TEXT)
+		PixelFont.draw_centered(canvas, "BUMPS %d/3" % c.bumps, CX, 24, TEXT)
 		var mph = "%d MPH" % c.mph()
-		PixelFont.draw(canvas, mph, Vector2(476 - PixelFont.width(mph, 2), 252), ACCENT, 2)
+		PixelFont.draw(canvas, mph, Vector2(W - 4 - PixelFont.width(mph, 2), H - 18), ACCENT, 2)
 		if c._t < 5.0:
-			_label_box_at(GameText.CHASE_CONTROLS, 236)
+			_label_box_at(GameText.CHASE_CONTROLS, H - 34)
 		if c.msg_t > 0:
-			_label_box_at(c.msg, 60)
+			_label_box_at(c.msg, 60 + dy)
 	elif level.phase == Level.Phase.CHASE:
 		_meter(level.closing_in(), GameText.UI.deputy_near if level.role == "earl" else GameText.UI.closing_in)
 	elif level.phase == Level.Phase.SHOWDOWN:
 		_label_box("SHOWDOWN!  TACKLES %d/3" % level.earl.tackles)
 
 	var sc := "%06d" % level.score
-	PixelFont.draw(canvas, "SCORE", Vector2(476 - PixelFont.width(sc, 2), 4), ACCENT)
-	PixelFont.draw(canvas, sc, Vector2(476 - PixelFont.width(sc, 2), 11), TEXT, 2)
+	PixelFont.draw(canvas, "SCORE", Vector2(W - 4 - PixelFont.width(sc, 2), 4), ACCENT)
+	PixelFont.draw(canvas, sc, Vector2(W - 4 - PixelFont.width(sc, 2), 11), TEXT, 2)
 	var tm := _fmt_time(level.time)
-	PixelFont.draw(canvas, tm, Vector2(476 - PixelFont.width(tm), 24), TEXT)
+	PixelFont.draw(canvas, tm, Vector2(W - 4 - PixelFont.width(tm), 24), TEXT)
 
 	var t: Dictionary = level.text
 	if intro_t > 0.0 and not level.finished:
 		if Lighting.enabled():
 			_comic_intro(t)
 		else:
-			_panel([Names.fmt(t.get("episode", ""))] + _fmt_lines(t.get("blurb", [])), 40)
+			_panel([Names.fmt(t.get("episode", ""))] + _fmt_lines(t.get("blurb", [])), 40 + dy)
 
 	if level.phase == Level.Phase.WON and level.end_t > 60:
 		_results()
 	elif level.phase == Level.Phase.LOST and level.end_t > 50:
 		_panel([Names.fmt(GameText.UI["lose_title_" + level.role]), "",
-			GameText.UI.try_checkpoint if not Game.checkpoint.is_empty() else GameText.UI.try_again, GameText.MENU.end_menu], 90)
+			GameText.UI.try_checkpoint if not Game.checkpoint.is_empty() else GameText.UI.try_again, GameText.MENU.end_menu], 90 + dy)
 
 	if get_tree().paused:
-		canvas.draw_rect(Rect2(0, 0, 480, 270), Color(0, 0, 0, 0.45))
+		canvas.draw_rect(Rect2(0, 0, W, H), Color(0, 0, 0, 0.45))
 		var items := _pause_items()
-		var rect := Rect2(150, 95, 180, 30 + items.size() * 12)
+		var rect := Rect2(150 + dx, 95 + dy, 180, 30 + items.size() * 12)
 		canvas.draw_rect(rect.grow(1), PixelFont.OUTLINE)
 		canvas.draw_rect(rect, PANEL)
 		canvas.draw_rect(rect.grow(-2), PANEL_EDGE, false, 1.0)
-		PixelFont.draw_centered(canvas, GameText.UI.paused, 240, 101, ACCENT, 2)
+		PixelFont.draw_centered(canvas, GameText.UI.paused, CX, 101 + dy, ACCENT, 2)
 		for i in items.size():
-			var y := 117.0 + i * 12.0
+			var y := 117.0 + dy + i * 12.0
 			if i == pause_sel:
-				canvas.draw_rect(Rect2(160, y - 3, 160, 11), Color(0, 0, 0, 0.4))
-			PixelFont.draw_centered(canvas, items[i], 240, y, ACCENT if i == pause_sel else TEXT)
+				canvas.draw_rect(Rect2(160 + dx, y - 3, 160, 11), Color(0, 0, 0, 0.4))
+			PixelFont.draw_centered(canvas, items[i], CX, y, ACCENT if i == pause_sel else TEXT)
 
 	if debug:
 		var lines := [
@@ -162,14 +183,14 @@ func _on_draw() -> void:
 			("EARL " + Earl.State.keys()[level.earl.state] if level.earl else "DEPUTY " + Deputy.State.keys()[level.deputy.state]) + "  FPS %d" % Engine.get_frames_per_second(),
 		]
 		for i in lines.size():
-			PixelFont.draw(canvas, lines[i], Vector2(6, 238 + i * 8), TEXT)
+			PixelFont.draw(canvas, lines[i], Vector2(6, H - 32 + i * 8), TEXT)
 
 
 # --- pieces --------------------------------------------------------------------------
 func _meter(v: float, label: String) -> void:
 	var w := 120.0
-	var x := 240.0 - w / 2.0
-	PixelFont.draw_centered(canvas, label, 240, 4, ACCENT)
+	var x := CX - w / 2.0
+	PixelFont.draw_centered(canvas, label, CX, 4, ACCENT)
 	var r := Rect2(x, 11, w, 8)
 	canvas.draw_rect(r.grow(1), PixelFont.OUTLINE)
 	canvas.draw_rect(r, Color("3a2414"))
@@ -182,18 +203,18 @@ func _meter(v: float, label: String) -> void:
 
 func _label_box(t: String) -> void:
 	var w := PixelFont.width(t) + 10
-	var r := Rect2(240 - w / 2.0, 6, w, 11)
+	var r := Rect2(CX - w / 2.0, 6, w, 11)
 	canvas.draw_rect(r.grow(1), PixelFont.OUTLINE)
 	canvas.draw_rect(r, PANEL)
-	PixelFont.draw_centered(canvas, t, 240, 9, ACCENT)
+	PixelFont.draw_centered(canvas, t, CX, 9, ACCENT)
 
 
 func _label_box_at(t: String, y: float) -> void:
 	var w := PixelFont.width(t) + 10
-	var r := Rect2(240 - w / 2.0, y, w, 11)
+	var r := Rect2(CX - w / 2.0, y, w, 11)
 	canvas.draw_rect(r.grow(1), PixelFont.OUTLINE)
 	canvas.draw_rect(r, PANEL)
-	PixelFont.draw_centered(canvas, t, 240, y + 3, ACCENT)
+	PixelFont.draw_centered(canvas, t, CX, y + 3, ACCENT)
 
 
 ## The results screen: time / pies / stars with their medals, the favor and the score.
@@ -201,32 +222,32 @@ func _results() -> void:
 	var last := Game.level_index == Game.LEVELS.size() - 1
 	var md: Dictionary = level.medals()
 	var names: Array = GameText.UI.medal_names
-	var rect := Rect2(130, 52, 220, 150)
+	var rect := Rect2(130 + dx, 52 + dy, 220, 150)
 	canvas.draw_rect(rect.grow(1), PixelFont.OUTLINE)
 	canvas.draw_rect(rect, PANEL)
 	canvas.draw_rect(rect.grow(-2), PANEL_EDGE, false, 1.0)
-	PixelFont.draw_centered(canvas, Names.fmt(GameText.UI["win_title_" + level.role]), 240, 60, ACCENT, 2)
+	PixelFont.draw_centered(canvas, Names.fmt(GameText.UI["win_title_" + level.role]), CX, 60 + dy, ACCENT, 2)
 	var rows := [
 		["TIME", _fmt_time(level.time), md.time],
 		["PIES", "%d / %d" % [level.pies_got, level.pies_total], md.pies],
 		["STARS", "%d / %d" % [level.stars_got, level.stars_total], md.stars],
 	]
 	for i in rows.size():
-		var y := 80.0 + i * 14.0
-		PixelFont.draw(canvas, rows[i][0], Vector2(146, y), TEXT)
-		PixelFont.draw(canvas, rows[i][1], Vector2(196, y), TEXT)
-		_medal(Vector2(268, y + 2), rows[i][2])
-		PixelFont.draw(canvas, names[rows[i][2]], Vector2(276, y), _medal_color(rows[i][2]) if rows[i][2] > 0 else TEXT)
-	var y2 := 124.0
-	PixelFont.draw(canvas, "GOLDEN PIE", Vector2(146, y2), TEXT)
-	PixelFont.draw(canvas, "YES" if level.golden_got else "NO", Vector2(276, y2), ACCENT if level.golden_got else TEXT)
+		var y := 80.0 + dy + i * 14.0
+		PixelFont.draw(canvas, rows[i][0], Vector2(146 + dx, y), TEXT)
+		PixelFont.draw(canvas, rows[i][1], Vector2(196 + dx, y), TEXT)
+		_medal(Vector2(268 + dx, y + 2), rows[i][2])
+		PixelFont.draw(canvas, names[rows[i][2]], Vector2(276 + dx, y), _medal_color(rows[i][2]) if rows[i][2] > 0 else TEXT)
+	var y2 := 124.0 + dy
+	PixelFont.draw(canvas, "GOLDEN PIE", Vector2(146 + dx, y2), TEXT)
+	PixelFont.draw(canvas, "YES" if level.golden_got else "NO", Vector2(276 + dx, y2), ACCENT if level.golden_got else TEXT)
 	if level.favor_obj:
-		PixelFont.draw(canvas, GameText.UI.favor, Vector2(146, y2 + 12), TEXT)
-		PixelFont.draw(canvas, GameText.UI.favor_yes if level.favor_done else GameText.UI.favor_no, Vector2(276, y2 + 12), ACCENT if level.favor_done else TEXT)
-	PixelFont.draw(canvas, "SCORE", Vector2(146, y2 + 24), TEXT)
-	PixelFont.draw(canvas, "%d" % level.score, Vector2(276, y2 + 24), ACCENT)
-	PixelFont.draw_centered(canvas, GameText.UI.last_level if last else GameText.UI.next_level, 240, 178, TEXT)
-	PixelFont.draw_centered(canvas, GameText.MENU.end_menu, 240, 189, TEXT)
+		PixelFont.draw(canvas, GameText.UI.favor, Vector2(146 + dx, y2 + 12), TEXT)
+		PixelFont.draw(canvas, GameText.UI.favor_yes if level.favor_done else GameText.UI.favor_no, Vector2(276 + dx, y2 + 12), ACCENT if level.favor_done else TEXT)
+	PixelFont.draw(canvas, "SCORE", Vector2(146 + dx, y2 + 24), TEXT)
+	PixelFont.draw(canvas, "%d" % level.score, Vector2(276 + dx, y2 + 24), ACCENT)
+	PixelFont.draw_centered(canvas, GameText.UI.last_level if last else GameText.UI.next_level, CX, 178 + dy, TEXT)
+	PixelFont.draw_centered(canvas, GameText.MENU.end_menu, CX, 189 + dy, TEXT)
 
 
 static func _medal_color(m: int) -> Color:
@@ -258,12 +279,12 @@ func _panel(lines: Array, y: float) -> void:
 	for l in lines:
 		w = maxi(w, PixelFont.width(str(l), 1))
 	var h := lines.size() * 10 + 8
-	var rect := Rect2(240 - w / 2.0 - 10, y, w + 20, h)
+	var rect := Rect2(CX - w / 2.0 - 10, y, w + 20, h)
 	canvas.draw_rect(rect.grow(1), PixelFont.OUTLINE)
 	canvas.draw_rect(rect, PANEL)
 	canvas.draw_rect(rect.grow(-2), PANEL_EDGE, false, 1.0)
 	for i in lines.size():
-		PixelFont.draw_centered(canvas, str(lines[i]), 240, y + 6 + i * 10, ACCENT if i == 0 else TEXT)
+		PixelFont.draw_centered(canvas, str(lines[i]), CX, y + 6 + i * 10, ACCENT if i == 0 else TEXT)
 
 
 ## Episode intro as two comic panels that slam in: the villain's mug shot
@@ -283,7 +304,7 @@ func _comic_intro(t: Dictionary) -> void:
 	var lift := 0.0 if intro_t > 0.45 else (1.0 - intro_t / 0.45) * 160.0
 	# panel A: mug shot
 	var who := "earl" if level.role == "sheriff" else "deputy"
-	var a := Rect2(lerpf(-130.0, 12.0, ka), 46.0 - lift, 108.0, 86.0)
+	var a := Rect2(lerpf(-130.0, 12.0 + dx, ka), 46.0 + dy * 0.5 - lift, 108.0, 86.0)
 	canvas.draw_set_transform(a.get_center(), -0.03, Vector2.ONE)
 	var la := Rect2(-a.size / 2.0, a.size)
 	canvas.draw_rect(la.grow(3), Color("fff6dc"))
@@ -305,7 +326,7 @@ func _comic_intro(t: Dictionary) -> void:
 	canvas.draw_rect(Rect2(la.position.x, la.end.y - 12, la.size.x, 12), PixelFont.OUTLINE)
 	PixelFont.draw_centered(canvas, Names.fmt("{%s}" % who), 0, la.end.y - 9, Color("ffd23f"))
 	# panel B: caption + blurb
-	var b := Rect2(lerpf(500.0, 128.0, kb), 46.0 - lift, 340.0, 86.0)
+	var b := Rect2(lerpf(W + 20.0, 128.0 + dx, kb), 46.0 + dy * 0.5 - lift, 340.0, 86.0)
 	canvas.draw_set_transform(b.get_center(), 0.015, Vector2.ONE)
 	var lb := Rect2(-b.size / 2.0, b.size)
 	canvas.draw_rect(lb.grow(3), Color("fff6dc"))

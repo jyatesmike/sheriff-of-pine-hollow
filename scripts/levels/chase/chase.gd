@@ -70,6 +70,8 @@ func setup(l: Node, data: Dictionary) -> void:
 	move_child(backdrop, 0)
 	$View.build_backdrop(backdrop)
 	cam.make_current()
+	if Game.handheld:
+		cam.zoom = Vector2.ONE * Game.zoom()    # whole-number zoom: crisp on the handheld
 	cam.position = Vector2(x + 120, -60)
 	pass  # (4.3 physics interpolation not in 4.1)
 	say(GameText.CHASE_START, "chase_start")
@@ -306,10 +308,15 @@ func _traffic(delta: float) -> void:
 						break
 
 
+## Half the width of the road view, in world pixels (240 at the normal 480x270).
+func half_width() -> float:
+	return get_viewport_rect().size.x * 0.5 / cam.zoom.x
+
+
 ## Oncoming cars in your lane that are still off the right edge of the screen (for the "!" warning).
 func incoming() -> Array:
 	var out := []
-	var right := cam.position.x + 240.0
+	var right := cam.position.x + half_width()
 	for v in traffic:
 		if not v.gone and v.v < 0.0 and v.x > right - 20.0 and v.x - x < WARN_DIST:
 			out.append(v)
