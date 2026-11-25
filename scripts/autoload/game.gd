@@ -100,6 +100,11 @@ func _setup_display() -> void:
 	world_scale = k
 	ui_scale = maxi(1, mini(s.x / DESIGN.x, s.y / DESIGN.y))   # = k on a computer: UI size stays 480x270
 	var root := get_tree().root
+	if not desktop and window != s:
+		# The window must be the screen's size. (The handheld runtime opened it at
+		# the computer size, 1440x810, and squeezed that onto the 640x480 screen.)
+		DisplayServer.window_set_size(s)
+		print("[display] window resized to %s (now %s)" % [s, DisplayServer.window_get_size()])
 	root.content_scale_size = s
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
 	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP

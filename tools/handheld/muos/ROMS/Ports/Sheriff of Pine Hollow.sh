@@ -57,7 +57,7 @@ if [ ! -f "$PCK" ]; then
 	exit 1
 fi
 
-"$FRT" --display-driver frt --rendering-method gl_compatibility \
+"$FRT" --display-driver frt --rendering-method gl_compatibility --resolution 640x480 \
 	--main-pack "$PCK" >> "$LOG" 2>&1 &
 GAME_PID=$!
 
