@@ -304,7 +304,8 @@ func _driver(sheet: String, anim: String, at: Vector2) -> void:
 	if tex == null:
 		return
 	var feet := at + Vector2(0, 6 if sheet != "hen" else -14)
-	draw_texture(tex, feet - Vector2(tex.get_width() / 2.0, tex.get_height()))
+	var sz := SpriteLib.draw_size(sheet, tex)
+	draw_texture_rect(tex, Rect2(feet - Vector2(sz.x / 2.0, sz.y), sz), false)
 
 
 ## The car bodies, in front of whoever is sitting in them.

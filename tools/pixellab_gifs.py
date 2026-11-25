@@ -9,6 +9,8 @@ Frames are used at their real size (no scaling, so the pixels stay crisp):
 the centre of each GIF's canvas goes to the centre of the 48 x 64 cell and
 its ground line (lowest foot in that animation) to the bottom of the cell.
 Rows with no GIF are faked from the first idle frame. Needs Pillow.
+Option --scale=2 builds double-resolution art (96 x 128 frames) for
+art/sprites/<sheet>@2x.png: make the character about twice as tall in PixelLab.
 Option --fix-navy recolours navy trousers back to the khaki uniform (some
 PixelLab templates ignore the character's colours).
 """
@@ -19,6 +21,7 @@ ROWS = [("idle", 4), ("run", 8), ("jump", 1), ("fall", 1), ("land", 2), ("skid",
         ("hurt", 2), ("victory", 6), ("slide", 3), ("tiphat", 4), ("taunt", 4), ("stunned", 2),
         ("cuffed", 2), ("aim", 3), ("fumble", 4), ("climb", 4), ("climb_idle", 1)]
 W, H, COLS = 48, 64, 8
+S = 1   # --scale=2: double-resolution art (96 x 128 frames), saved as <sheet>@2x.png
 KHAKI, KHAKI_DARK = (239, 182, 129), (173, 118, 79)
 
 
@@ -44,12 +47,12 @@ def recolour(im):
                 continue
             if b > r + 20 and b > g + 10 and b > 30:            # navy / blue cloth
                 px[x, y] = (KHAKI if b > 55 else KHAKI_DARK) + (255,)
-            elif y > top + 16 and r > 240 and g > 222 and b > 210:   # white shirt (not the eyes)
+            elif y > top + 16 * S and r > 240 and g > 222 and b > 210:   # white shirt (not the eyes)
                 px[x, y] = (247, 196, 145, 255)
     # solid black trouser fill: dark pixels that aren't outline (no transparent
     # neighbour) below the belt line
     src = im.copy().load()
-    for y in range(top + 30, im.height - 1):
+    for y in range(top + 30 * S, im.height - 1):
         for x in range(1, im.width - 1):
             r, g, b, a = src[x, y]
             if a > 128 and r + g + b < 40:
@@ -67,8 +70,14 @@ def pick(fr, n, which=None):
 
 
 def main():
+    global W, H, S
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     fixes = set(a[2:] for a in sys.argv[1:] if a.startswith("--"))
+    for f in list(fixes):
+        if f.startswith("scale="):
+            S = int(f.split("=", 1)[1])
+            W, H = W * S, H * S
+            fixes.discard(f)
     sheet_name, out = args[0], args[1]
     anims = {}
     for a in args[2:]:
@@ -98,8 +107,8 @@ def main():
         for i, f in enumerate(frames):
             dx, dy = 0, 0
             if fake:
-                dy = {"run": [0, -1, -2, -1] * 2, "idle": [0, -1] * 2}.get(name, [0] * 8)[i % 8]
-                dx = [-1, 1][i % 2] if name in ("hurt", "stunned", "fumble") else 0
+                dy = {"run": [0, -1, -2, -1] * 2, "idle": [0, -1] * 2}.get(name, [0] * 8)[i % 8] * S
+                dx = ([-1, 1][i % 2] if name in ("hurt", "stunned", "fumble") else 0) * S
             x = i * W + W // 2 - f.width // 2 + dx
             y = row * H + H - ground + dy
             cell = Image.new("RGBA", sheet.size, (0, 0, 0, 0))

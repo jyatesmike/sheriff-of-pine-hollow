@@ -11,6 +11,30 @@ static var _layouts := {}
 static var _regions := {}
 static var _tilesets := {}
 static var _heads := {}
+static var _scales := {}   # sheet -> 0.5 when its double-resolution art is in use
+
+
+## Double-resolution art: art/sprites/<sheet>@2x.png, the same rows with frames
+## twice the size (96x128 for the characters). Used only when the display shows
+## at least 2 screen pixels per world pixel (the handheld display, see
+## Game._setup_display()), and drawn at half scale, so sizes and gameplay don't
+## change: the extra pixels become extra detail. Computers keep the normal art.
+static func hires_on() -> bool:
+	var g = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Game") if Engine.get_main_loop() is SceneTree else null
+	return g != null and g.get("handheld") and int(g.get("world_scale")) >= 2
+
+
+## 0.5 if the sheet is drawn from its double-resolution art, else 1.0. Anything
+## that draws a frame texture directly scales it by this.
+static func art_scale(sheet: String) -> float:
+	frames(sheet)
+	return _scales.get(sheet, 1.0)
+
+
+## The size to draw a frame texture of this sheet at, in world pixels (48x64 for
+## the characters, whatever the art's resolution). Use with draw_texture_rect().
+static func draw_size(sheet: String, tex: Texture2D) -> Vector2:
+	return tex.get_size() * art_scale(sheet)
 
 
 ## [atlas, region] framing a character's head (from its first idle frame),
@@ -38,7 +62,8 @@ static func head(sheet: String) -> Array:
 					if found:
 						top = y
 						break
-			out = [at.atlas, Rect2(at.region.position + Vector2(13, maxf(top - 1, 0)), Vector2(22, 22))]
+			var k := 1.0 / art_scale(sheet)
+			out = [at.atlas, Rect2(at.region.position + Vector2(13 * k, maxf(top - k, 0)), Vector2(22, 22) * k)]
 	_heads[sheet] = out
 	return out
 
@@ -52,6 +77,12 @@ static func frames(sheet: String) -> SpriteFrames:
 	var tex: Texture2D = load("res://art/sprites/%s.png" % sheet)
 	var fw: int = lay.frame[0]
 	var fh: int = lay.frame[1]
+	var hires := "res://art/sprites/%s@2x.png" % sheet
+	if hires_on() and ResourceLoader.exists(hires):
+		tex = load(hires)
+		fw *= 2
+		fh *= 2
+		_scales[sheet] = 0.5
 	var sf := SpriteFrames.new()
 	sf.remove_animation("default")
 	for row in lay.anims.size():

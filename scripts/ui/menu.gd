@@ -478,9 +478,11 @@ func _backdrop() -> void:
 		var earl := SpriteLib.frames("earl").get_frame_texture("run", int(_t * 10.0) % 6)
 		var sheriff := SpriteLib.frames("sheriff").get_frame_texture("run", int(_t * 10.0 + 2) % 6)
 		if earl:
-			draw_texture(earl, Vector2(loop + 60, H - 22 - earl.get_height()))
+			var es := SpriteLib.draw_size("earl", earl)
+			draw_texture_rect(earl, Rect2(Vector2(loop + 60, H - 22 - es.y), es), false)
 		if sheriff:
-			draw_texture(sheriff, Vector2(loop - 10, H - 22 - sheriff.get_height()))
+			var ss := SpriteLib.draw_size("sheriff", sheriff)
+			draw_texture_rect(sheriff, Rect2(Vector2(loop - 10, H - 22 - ss.y), ss), false)
 
 
 ## The painted title screen: sunset over the county, the town on the hill,
@@ -575,7 +577,7 @@ func _title_scene() -> void:
 	var peek := 0.5 + 0.5 * sin(_t * 0.9)
 	var et := SpriteLib.frames("earl").get_frame_texture("taunt", int(_t * 6.0) % 4)
 	if et:
-		draw_set_transform(Vector2(440 + rx - peek * 18.0, 258 + lift), 0.0, Vector2(-2, 2))
+		draw_set_transform(Vector2(440 + rx - peek * 18.0, 258 + lift), 0.0, Vector2(-2, 2) * SpriteLib.art_scale("earl"))
 		draw_texture(et, Vector2(-et.get_width() / 2.0, -et.get_height()))
 		draw_set_transform(Vector2(0, lift), 0.0, Vector2.ONE)
 		_pine(Vector2(452 + rx, 262), 1.9, true)
@@ -583,7 +585,7 @@ func _title_scene() -> void:
 	var stx := SpriteLib.frames(Game.character()).get_frame_texture(anim, int(_t * 7.0) % 4)
 	if stx:
 		draw_colored_polygon(ellipse_pts(Vector2(66, 260), Vector2(26, 4)), Color(0, 0, 0, 0.35))
-		draw_set_transform(Vector2(66, 262 + lift), 0.0, Vector2(2, 2))
+		draw_set_transform(Vector2(66, 262 + lift), 0.0, Vector2(2, 2) * SpriteLib.art_scale(Game.character()))
 		draw_texture(stx, Vector2(-stx.get_width() / 2.0, -stx.get_height()))
 		draw_set_transform(Vector2(0, lift), 0.0, Vector2.ONE)
 	# fireflies rising out of the grass

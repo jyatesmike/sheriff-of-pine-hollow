@@ -155,7 +155,8 @@ func _draw() -> void:
 		var bp := _boat_pos()
 		var tex := SpriteLib.frames("earl").get_frame_texture("taunt" if tug_t == 0 else "throw", 0)
 		if tex:
-			draw_texture(tex, bp + Vector2(-tex.get_width() / 2.0, -tex.get_height() - 4))
+			var sz := SpriteLib.draw_size("earl", tex)
+			draw_texture_rect(tex, Rect2(bp + Vector2(-sz.x / 2.0, -sz.y - 4), sz), false)
 		var hull := Color("6a8a5a")
 		draw_colored_polygon(PackedVector2Array([bp + Vector2(-30, -14), bp + Vector2(30, -14), bp + Vector2(22, -2), bp + Vector2(-22, -2)]), OUTLINE)
 		draw_colored_polygon(PackedVector2Array([bp + Vector2(-28, -13), bp + Vector2(28, -13), bp + Vector2(21, -3), bp + Vector2(-21, -3)]), hull)

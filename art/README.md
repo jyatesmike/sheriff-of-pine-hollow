@@ -40,6 +40,19 @@ Sheriff, Earl, Dewey, Jim, the deputy and the townsfolk share one layout. Each f
 Frame rates and looping are in `data/sprites.json`. `python3 tools/validate.py` checks every
 sheet against that file (size, rows, transparency).
 
+### Double-resolution art (more detail on the handheld) — `art/sprites/<name>@2x.png`
+Any character sheet can have a double-resolution twin next to it, e.g. `sheriff@2x.png`:
+the same rows and frame counts, with frames of **96×128** (sheet 768×2304), feet on the
+bottom edge, facing right. On the handheld display (2 screen pixels per world pixel) the game
+draws it at half scale, so the character is the same size and plays the same, and the
+extra pixels show as extra detail. Computers keep using the normal sheet. Characters without
+an `@2x` sheet keep their normal art, so sheets can be upgraded one at a time.
+
+From PixelLab: make the character about twice as tall (around 112 px, on a 128 px canvas),
+put the GIFs in `art/source/pixellab/<name>@2x/` and build with `--scale=2`, e.g.
+`python3 tools/pixellab_gifs.py sheriff art/sprites/sheriff@2x.png --scale=2 idle=... run=...`.
+`tools/validate.py` checks the size.
+
 ## Animals — `art/sprites/hen.png`, `goose.png`
 Frames are **32×24** and face right, with the feet on the bottom row. The rows are:
 walk (4), peck (3), flap (2), tumble (2).

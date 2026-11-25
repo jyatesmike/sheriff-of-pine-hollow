@@ -94,14 +94,16 @@ func _draw() -> void:
 func _person(kind: String) -> void:
 	# townsfolk sheets live in art/sprites/<npc>.png (same layout as the cast)
 	var anim := "victory" if state == 2 and talk_t > 0 else "idle"
-	var sf := SpriteLib.frames(kind if ResourceLoader.exists("res://art/sprites/%s.png" % kind) else "aunt")
+	var sheet := kind if ResourceLoader.exists("res://art/sprites/%s.png" % kind) else "aunt"
+	var sf := SpriteLib.frames(sheet)
 	var n := sf.get_frame_count(anim)
 	var tex := sf.get_frame_texture(anim, int(_t * sf.get_animation_speed(anim)) % n)
 	if tex == null:
 		return
 	var face := 1.0 if player() == null or player().global_position.x >= global_position.x else -1.0
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2(face, 1))
-	draw_texture(tex, Vector2(-tex.get_width() / 2.0, -tex.get_height() + 2))
+	var sz := SpriteLib.draw_size(sheet, tex)
+	draw_texture_rect(tex, Rect2(Vector2(-sz.x / 2.0, -sz.y + 2), sz), false)
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 

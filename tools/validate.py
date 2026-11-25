@@ -99,13 +99,21 @@ def check_sprites() -> None:
                 f"({SHEET_COLS} frames of {fw}x{fh} x {len(anims)} animations)")
         if not alpha:
             err(f"{rel(png)}: has no transparency")
+        hires = ROOT / f"art/sprites/{name}@2x.png"     # optional double-resolution art
+        if hires.exists():
+            hinfo = png_info(hires)
+            if not hinfo or hinfo[:2] != (want[0] * 2, want[1] * 2):
+                err(f"{rel(hires)}: is {hinfo[0]}x{hinfo[1] if hinfo else '?'}, expected {want[0] * 2}x{want[1] * 2} "
+                    f"(double-resolution art: frames of {fw * 2}x{fh * 2}, same rows)")
+            elif not hinfo[2]:
+                err(f"{rel(hires)}: has no transparency")
         for a in anims:
             if not 1 <= int(a["frames"]) <= SHEET_COLS:
                 err(f"data/sprites.json: {name}.{a['name']} has {a['frames']} frames (1-{SHEET_COLS} fit in a row)")
             if a.get("fps", 0) <= 0:
                 err(f"data/sprites.json: {name}.{a['name']} fps must be > 0")
     for png in sorted((ROOT / "art/sprites").glob("*.png")):
-        if png.stem not in layout.get("sheets", {}) and png.stem != "props":
+        if png.stem.removesuffix("@2x") not in layout.get("sheets", {}) and png.stem != "props":
             warn(f"{rel(png)}: not listed in data/sprites.json (unused?)")
 
 
