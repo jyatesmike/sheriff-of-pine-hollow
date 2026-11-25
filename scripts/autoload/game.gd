@@ -26,7 +26,7 @@ var settings := {
 	"fancy_effects": true,    # lighting, particles (turn off on slow computers)
 	"character": "sheriff",   # who you play as (picked on the title screen)
 	"zoom": 0.0,              # game zoom: 0 = automatic (bigger on small handheld screens), else 1.0 / 1.25 / 1.5 / 1.75 / 2.0
-	"pixel_perfect": true,    # handheld screens: draw at the screen's own size, crisp (see _setup_display)
+	"pixel_perfect": true,    # draw at the screen's / window's own size, crisp (see _setup_display)
 	"controls": {},           # action -> {"key": physical keycode, "joy": button}: your own keys
 }
 
@@ -41,8 +41,11 @@ const ZOOMS := [1.0, 1.25, 1.5, 1.75, 2.0]
 ## picked in _setup_display() (2x on the RG35XX), so every art pixel is an exact
 ## square of screen pixels. Otherwise automatic: 1.5x on small screens, 1x on a computer.
 func zoom() -> float:
-	if handheld:
+	if handheld and not desktop:
 		return float(world_scale)
+	if handheld:      # a computer in the crisp display: whole-number base x the zoom setting
+		var dz: float = settings.get("zoom", 0.0)
+		return float(world_scale) * (dz if dz > 0.0 else 1.0)
 	var z: float = settings.get("zoom", 0.0)
 	if z > 0.0:
 		return z
@@ -59,24 +62,49 @@ const DESIGN := Vector2i(480, 270)
 var handheld := false     # true once the handheld display is on
 var world_scale := 1      # camera zoom in the handheld display
 var ui_scale := 1         # HUD / menu scale in the handheld display
+var desktop := false      # the crisp display on a computer (480x270 view, drawn at the window's size)
 
 
 func _setup_display() -> void:
 	if OS.has_feature("web") or DisplayServer.get_name() == "headless":
 		return
-	if not settings.get("pixel_perfect", true):
-		return
-	var s := DisplayServer.screen_get_size()
-	# Handheld-sized screens only (a laptop keeps the normal, scaled picture).
-	if s.x <= 0 or s.y <= 0 or s.x > 1024 or s.y > 768:
-		return
-	var k := mini(s.x / 320, s.y / 180)    # show at least 320 x 180 of the world
-	if k < 2:
+	var screen := DisplayServer.screen_get_size()
+	var window := DisplayServer.window_get_size()
+	# The handheld build (export preset "Handheld (Linux ARM64)") carries the
+	# "handheld" feature tag, in case the runtime reports an odd screen size.
+	var tagged := OS.has_feature("handheld")
+	var s := Vector2i.ZERO
+	for c in [screen, window]:          # the first one that is handheld-sized
+		if c.x > 0 and c.y > 0 and c.x <= 1024 and c.y <= 768:
+			s = c
+			break
+	if s == Vector2i.ZERO and tagged:
+		s = Vector2i(640, 480)          # the RG35XX's screen
+	var k := mini(s.x / 320, s.y / 180) if s != Vector2i.ZERO else 0    # show at least 320 x 180 of the world
+	if s == Vector2i.ZERO and window.x >= DESIGN.x * 2 and window.y >= DESIGN.y * 2:
+		# A computer: keep the 480x270 view, but draw it at a whole multiple of it
+		# that fits the window, so the double-resolution art shows its detail.
+		k = mini(window.x / DESIGN.x, window.y / DESIGN.y)
+		s = DESIGN * k
+		desktop = true
+	var on: bool = settings.get("pixel_perfect", true) and k >= 2
+	if not on:
+		desktop = false
+	# One line in the log (the muOS launcher writes it to game.log) to see what the device reports.
+	print("[display] driver=%s screen=%s window=%s handheld_tag=%s -> handheld display %s%s" % [
+		DisplayServer.get_name(), screen, window, tagged, "ON" if on else "off",
+		(" at %s, world %dx" % [s, k]) if on else ""])
+	if not on:
 		return
 	handheld = true
 	world_scale = k
-	ui_scale = maxi(1, mini(s.x / DESIGN.x, s.y / DESIGN.y))
+	ui_scale = maxi(1, mini(s.x / DESIGN.x, s.y / DESIGN.y))   # = k on a computer: UI size stays 480x270
 	var root := get_tree().root
+	if not desktop and window != s:
+		# The window must be the screen's size. (The handheld runtime opened it at
+		# the computer size, 1440x810, and squeezed that onto the 640x480 screen.)
+		DisplayServer.window_set_size(s)
+		print("[display] window resized to %s (now %s)" % [s, DisplayServer.window_get_size()])
 	root.content_scale_size = s
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
 	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP

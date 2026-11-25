@@ -72,6 +72,7 @@ var combo := 0              # stomps chained without touching the ground
 var won := false
 var idle_t := 0             # frames standing still (for the tip-hat taunt)
 var throw_t := 0            # frames left in the throw animation
+var lasso_anim_t := 0       # frames left in the lasso-throw animation (sheets that have one)
 var rocks := 0              # rocks carried (Rock Creek)
 var can_throw := false
 var stand_h := 50.0         # standing hitbox height (Earl is shorter)
@@ -150,6 +151,12 @@ func _physics_process(delta: float) -> void:
 			return
 	if lasso and input_enabled and hurt_t == 0 and not sliding and Input.is_action_just_pressed("lasso"):
 		lasso.fire()
+		# a character with a "lasso" animation plays it as the rope goes out
+		if visual.sprite_frames.has_animation("lasso"):
+			var sf: SpriteFrames = visual.sprite_frames
+			lasso_anim_t = ceili(sf.get_frame_count("lasso") / sf.get_animation_speed("lasso") * 60.0)
+			visual.play("lasso")     # from its first frame, even if it's already showing
+	lasso_anim_t = maxi(lasso_anim_t - 1, 0)
 
 	throw_t = maxi(throw_t - 1, 0)
 	if can_throw and input_enabled and hurt_t == 0 and not sliding and Input.is_action_just_pressed("throw"):
@@ -435,6 +442,8 @@ func _pick_anim(dir: float, on_floor: bool) -> void:
 		anim = "hurt"
 	elif throw_t > 0:
 		anim = "throw"
+	elif lasso_anim_t > 0:
+		anim = "lasso"
 	elif sliding:
 		anim = "slide"
 	elif not on_floor:

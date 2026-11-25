@@ -145,7 +145,8 @@ func _draw() -> void:
 		var tex := SpriteLib.frames("watchman").get_frame_texture("run", int(_t * 9.0) % 8)
 		if tex:
 			draw_set_transform(Vector2(wx, 0), 0.0, Vector2(wdir, 1))
-			draw_texture(tex, Vector2(-tex.get_width() / 2.0, -tex.get_height() + 2))
+			var sz := SpriteLib.draw_size("watchman", tex)
+			draw_texture_rect(tex, Rect2(Vector2(-sz.x / 2.0, -sz.y + 2), sz), false)
 			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		draw_circle(o2, 2.5, Color("fff0a0"))
 	else:
@@ -155,7 +156,8 @@ func _draw() -> void:
 		draw_rect(wr, Color("e8c060"))
 		var wt := SpriteLib.frames("watchman").get_frame_texture("idle", int(_t * 6.0) % 4)
 		if wt:
-			draw_texture_rect_region(wt.atlas, Rect2(origin.x - 12, origin.y - 24, 24, 26), Rect2(wt.region.position + Vector2(12, 6), Vector2(24, 26)))
+			var k := 1.0 / SpriteLib.art_scale("watchman")     # region in the texture's own pixels
+			draw_texture_rect_region(wt.atlas, Rect2(origin.x - 12, origin.y - 24, 24, 26), Rect2(wt.region.position + Vector2(12, 6) * k, Vector2(24, 26) * k))
 		draw_rect(Rect2(wr.position.x - 3, wr.end.y, wr.size.x + 6, 3), Color("5a4a3a"))
 		draw_circle(o2, 2.5, Color("fff0a0"))
 	if alarm > 0.05:

@@ -197,7 +197,8 @@ func _canoe(at: Vector2, with_earl: bool, earls: bool) -> void:
 	if with_earl:
 		var tex := SpriteLib.frames("earl").get_frame_texture("taunt", 0)
 		if tex:
-			draw_texture(tex, base + Vector2(-tex.get_width() / 2.0, -tex.get_height() + 2))
+			var sz := SpriteLib.draw_size("earl", tex)
+			draw_texture_rect(tex, Rect2(base + Vector2(-sz.x / 2.0, -sz.y + 2), sz), false)
 	var hull := Color("b06030") if not earls else Color("4a6a9a")
 	# reflection and ripples under the hull
 	for k in 3:

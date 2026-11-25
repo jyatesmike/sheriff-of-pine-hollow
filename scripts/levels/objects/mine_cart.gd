@@ -213,7 +213,8 @@ func _cart(at: Vector2, with_earl: bool) -> void:
 	if with_earl:
 		var tex := SpriteLib.frames("earl").get_frame_texture("taunt", 0)
 		if tex:
-			draw_texture(tex, at + Vector2(-tex.get_width() / 2.0, -tex.get_height() - 6))
+			var sz := SpriteLib.draw_size("earl", tex)
+			draw_texture_rect(tex, Rect2(at + Vector2(-sz.x / 2.0, -sz.y - 6), sz), false)
 	var metal := Color("6a6e7a")
 	var rust := Color("8a4a2a")
 	# wheels behind the tub, with spokes that turn with the cart

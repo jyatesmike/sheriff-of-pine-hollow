@@ -308,8 +308,13 @@ Needs PortMaster's **Godot/FRT 4.1.3** runtime on the card
 2. Copy what's inside onto the **root** of the SD card (it merges into the existing folders):
    - `ROMS/Ports/Sheriff of Pine Hollow.sh`: the launcher muOS lists under Ports
    - `ports/mayberrymayhem/controller_bridge.py` and `sheriff-of-pine-hollow.pck`
-3. Launch it from Ports. **SELECT + START** quits. If it doesn't start, look at
-   `ports/mayberrymayhem/game.log` and `controller_bridge.log`.
+3. Make the launcher executable. The artifact zip doesn't keep that, and without it muOS
+   shows a black screen and returns to the menu without running anything. Over SSH:
+   `chmod +x /mnt/mmc/ROMS/Ports/*.sh`
+4. Launch it from Ports. **SELECT + START** quits. If it doesn't start, look at
+   `ROMS/Ports/sheriff-launcher.log` (written first, says where it stopped), then
+   `ports/mayberrymayhem/game.log` (its `[display]` line shows the screen size it found)
+   and `controller_bridge.log`.
 
 The FRT runtime doesn't read the gamepad, so `controller_bridge.py` turns the buttons into keys
 through a virtual keyboard: A = jump/confirm, B = pause/back, X = throw, Y = lasso,

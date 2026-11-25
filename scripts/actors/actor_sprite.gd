@@ -22,8 +22,10 @@ func _ready() -> void:
 func set_sheet(name: String) -> void:
 	sheet = name
 	sprite_frames = SpriteLib.frames(sheet)
+	scale = Vector2.ONE * SpriteLib.art_scale(sheet)
 	centered = true
-	offset = Vector2(0, -SpriteLib.frame_size(sheet).y / 2.0)
+	# offset is in the texture's own pixels (twice as many for double-resolution art)
+	offset = Vector2(0, -SpriteLib.frame_size(sheet).y / 2.0 / SpriteLib.art_scale(sheet))
 	play("idle" if sprite_frames.has_animation("idle") else sprite_frames.get_animation_names()[0])
 
 
@@ -47,4 +49,4 @@ func _process(delta: float) -> void:
 		if body and not body.is_on_floor():
 			var k := clampf(absf(body.velocity.y) / 900.0, 0.0, 0.12)
 			s *= Vector2(1.0 - k * 0.6, 1.0 + k)
-	scale = s
+	scale = s * SpriteLib.art_scale(sheet)
