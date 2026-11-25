@@ -16,6 +16,9 @@ GODOT="${GODOT:-godot}"
 OUT="${CI_OUT:-build/ci}"
 LEVELS="${LEVELS:-1 2 3 4 5 6 7}"
 HEROES="${HEROES:-sheriff dewey jim}"
+# Seconds before a bot run is stopped. A normal run takes well under a minute;
+# a level the game hangs on would otherwise hold the check up for a long time.
+BOT_TIMEOUT="${BOT_TIMEOUT:-180}"
 mkdir -p "$OUT"
 
 do_import() {
@@ -42,7 +45,7 @@ do_bots() {
 	local pids=() names=()
 	for hero in $HEROES; do
 		for n in $LEVELS; do
-			CHAR="$hero" timeout 600 "$GODOT" --headless --fixed-fps 60 \
+			CHAR="$hero" timeout "$BOT_TIMEOUT" "$GODOT" --headless --fixed-fps 60 \
 				-s tools/test_bot_run.gd -- "$n" god >"$OUT/bot_${hero}_$n.log" 2>&1 &
 			pids+=($!)
 			names+=("${hero}_$n")
@@ -53,7 +56,7 @@ do_bots() {
 		if wait "${pids[$i]}"; then
 			echo "ok   ${names[$i]}: $(grep -m1 ' WON ' "$OUT/bot_${names[$i]}.log")"
 		else
-			echo "FAIL ${names[$i]}: $(grep -m1 -E 'FAILED|SCRIPT ERROR' "$OUT/bot_${names[$i]}.log" || echo 'no result (crash or timeout)')"
+			echo "FAIL ${names[$i]}: $(grep -m1 -E 'FAILED|SCRIPT ERROR' "$OUT/bot_${names[$i]}.log" || echo "no result: the game crashed or hung (stopped after ${BOT_TIMEOUT}s)")"
 			fail=1
 		fi
 	done
