@@ -1,0 +1,259 @@
+{
+  "group_id": "2a4dc6f8-b001-4cbe-8c1a-1f57ceebc8d0",
+  "states": [
+    {
+      "character": {
+        "id": "05ec5721-0800-4c91-9543-86056a0ee435",
+        "name": "Idle",
+        "prompt": "Full-body, front-facing pixel art sprite of the deputy in the reference image. Match his slim build, big round eyes, prominent ears, long nose, and slightly nervous expression. Keep his tan campaign hat with the dark brim and gold star, tan uniform with a chest badge, black duty belt, tan trousers, and black shoes. Neutral standing pose, arms relaxed at his sides, both feet visible. Center him on a transparent 96\u00d7128 canvas with a few pixels of padding above his hat and below his shoes. Use crisp, hard-edged pixels, a dark outline, and simple shading. Single idle frame, straight-on view, no ground shadow or scenery.",
+        "size": {
+          "width": 96,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T02:24:58.072538+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {
+          "Running_Jump": {
+            "east": [
+              "Idle/animations/Running_Jump/east/frame_000.png",
+              "Idle/animations/Running_Jump/east/frame_001.png",
+              "Idle/animations/Running_Jump/east/frame_002.png",
+              "Idle/animations/Running_Jump/east/frame_003.png",
+              "Idle/animations/Running_Jump/east/frame_004.png",
+              "Idle/animations/Running_Jump/east/frame_005.png",
+              "Idle/animations/Running_Jump/east/frame_006.png",
+              "Idle/animations/Running_Jump/east/frame_007.png"
+            ]
+          },
+          "Running": {
+            "east": [
+              "Idle/animations/Running/east/frame_000.png",
+              "Idle/animations/Running/east/frame_001.png",
+              "Idle/animations/Running/east/frame_002.png",
+              "Idle/animations/Running/east/frame_003.png",
+              "Idle/animations/Running/east/frame_004.png",
+              "Idle/animations/Running/east/frame_005.png",
+              "Idle/animations/Running/east/frame_006.png",
+              "Idle/animations/Running/east/frame_007.png"
+            ]
+          },
+          "The_character_slowly_lifts_his_right_hand_to_the_b": {
+            "east": [
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_000.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_001.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_002.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_003.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_004.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_005.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_006.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_007.png",
+              "Idle/animations/The_character_slowly_lifts_his_right_hand_to_the_b/east/frame_008.png"
+            ]
+          },
+          "Slide": {
+            "east": [
+              "Idle/animations/Slide/east/frame_000.png",
+              "Idle/animations/Slide/east/frame_001.png",
+              "Idle/animations/Slide/east/frame_002.png",
+              "Idle/animations/Slide/east/frame_003.png",
+              "Idle/animations/Slide/east/frame_004.png",
+              "Idle/animations/Slide/east/frame_005.png"
+            ]
+          },
+          "The_character_clenches_both_fists_tightly_against": {
+            "south": [
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_000.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_001.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_002.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_003.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_004.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_005.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_006.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_007.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/south/frame_008.png"
+            ],
+            "east": [
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_000.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_001.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_002.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_003.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_004.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_005.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_006.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_007.png",
+              "Idle/animations/The_character_clenches_both_fists_tightly_against/east/frame_008.png"
+            ]
+          },
+          "Idle": {
+            "east": [
+              "Idle/animations/Idle/east/frame_000.png",
+              "Idle/animations/Idle/east/frame_001.png",
+              "Idle/animations/Idle/east/frame_002.png",
+              "Idle/animations/Idle/east/frame_003.png",
+              "Idle/animations/Idle/east/frame_004.png",
+              "Idle/animations/Idle/east/frame_005.png",
+              "Idle/animations/Idle/east/frame_006.png",
+              "Idle/animations/Idle/east/frame_007.png"
+            ]
+          },
+          "Taking_Punch": {
+            "east": [
+              "Idle/animations/Taking_Punch/east/frame_000.png",
+              "Idle/animations/Taking_Punch/east/frame_001.png",
+              "Idle/animations/Taking_Punch/east/frame_002.png",
+              "Idle/animations/Taking_Punch/east/frame_003.png",
+              "Idle/animations/Taking_Punch/east/frame_004.png",
+              "Idle/animations/Taking_Punch/east/frame_005.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "ba87b6c5-c133-454b-9641-1c117dd633bd",
+        "name": "facing east, about t",
+        "prompt": "Full-body, front-facing pixel art sprite of the deputy in the reference image. Match his slim build, big round eyes, prominent ears, long nose, and slightly nervous expression. Keep his tan campaign hat with the dark brim and gold star, tan uniform with a chest badge, black duty belt, tan trousers, and black shoes. Neutral standing pose, arms relaxed at his sides with a coiled brown lasso rope in one hand, both feet visible. Center him on a transparent 96\u00d7128 canvas with a few pixels of padding above his hat and below his shoes. Use crisp, hard-edged pixels, a dark outline, and simple shading. Single idle frame, straight-on view, no ground shadow or scenery.",
+        "size": {
+          "width": 96,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T02:45:18.800900+00:00"
+      },
+      "folder": "facing_east_about_t",
+      "frames": {
+        "rotations": {
+          "south": "facing_east_about_t/rotations/south.png",
+          "south-east": "facing_east_about_t/rotations/south-east.png",
+          "east": "facing_east_about_t/rotations/east.png",
+          "north-east": "facing_east_about_t/rotations/north-east.png",
+          "north": "facing_east_about_t/rotations/north.png",
+          "north-west": "facing_east_about_t/rotations/north-west.png",
+          "west": "facing_east_about_t/rotations/west.png",
+          "south-west": "facing_east_about_t/rotations/south-west.png"
+        },
+        "animations": {
+          "The_right_hand_draws_the_lasso_back_to_the_shoulde": {
+            "east": [
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_000.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_001.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_002.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_003.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_004.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_005.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_006.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_007.png",
+              "facing_east_about_t/animations/The_right_hand_draws_the_lasso_back_to_the_shoulde/east/frame_008.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "9422de25-162f-460c-a158-f37d0da3ea6d",
+        "name": "facing away (north)",
+        "prompt": "Full-body, front-facing pixel art sprite of the deputy in the reference image. Match his slim build, big round eyes, prominent ears, long nose, and slightly nervous expression. Keep his tan campaign hat with the dark brim and gold star, tan uniform with a chest badge, black duty belt, tan trousers, and black shoes. Neutral standing pose, arms relaxed at his sides, both feet visible. Center him on a transparent 96\u00d7128 canvas with a few pixels of padding above his hat and below his shoes. Use crisp, hard-edged pixels, a dark outline, and simple shading. Single idle frame, straight-on view, no ground shadow or scenery.",
+        "size": {
+          "width": 96,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T02:59:05.703429+00:00"
+      },
+      "folder": "facing_away_north",
+      "frames": {
+        "rotations": {
+          "south": "facing_away_north/rotations/south.png",
+          "south-east": "facing_away_north/rotations/south-east.png",
+          "east": "facing_away_north/rotations/east.png",
+          "north-east": "facing_away_north/rotations/north-east.png",
+          "north": "facing_away_north/rotations/north.png",
+          "north-west": "facing_away_north/rotations/north-west.png",
+          "west": "facing_away_north/rotations/west.png",
+          "south-west": "facing_away_north/rotations/south-west.png"
+        },
+        "animations": {
+          "The_character_performs_a_rhythmic_climbing_motion": {
+            "north": [
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_000.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_001.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_002.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_003.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_004.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_005.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_006.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_007.png",
+              "facing_away_north/animations/The_character_performs_a_rhythmic_climbing_motion/north/frame_008.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "3a9c6f2d-e91d-4704-b56b-7f989ad01fbd",
+        "name": "about to throw an ob",
+        "prompt": "Full-body, front-facing pixel art sprite of the deputy in the reference image. Match his slim build, big round eyes, prominent ears, long nose, and slightly nervous expression. Keep his tan campaign hat with the dark brim and gold star, tan uniform with a chest badge, black duty belt, tan trousers, and black shoes. Neutral standing pose, arms relaxed at his sides, both feet visible. Center him on a transparent 96\u00d7128 canvas with a few pixels of padding above his hat and below his shoes. Use crisp, hard-edged pixels, a dark outline, and simple shading. Single idle frame, straight-on view, no ground shadow or scenery.",
+        "size": {
+          "width": 96,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "side",
+        "created_at": "2026-11-25T03:06:37.674205+00:00"
+      },
+      "folder": "about_to_throw_an_ob",
+      "frames": {
+        "rotations": {
+          "south": "about_to_throw_an_ob/rotations/south.png",
+          "south-east": "about_to_throw_an_ob/rotations/south-east.png",
+          "east": "about_to_throw_an_ob/rotations/east.png",
+          "north-east": "about_to_throw_an_ob/rotations/north-east.png",
+          "north": "about_to_throw_an_ob/rotations/north.png",
+          "north-west": "about_to_throw_an_ob/rotations/north-west.png",
+          "west": "about_to_throw_an_ob/rotations/west.png",
+          "south-west": "about_to_throw_an_ob/rotations/south-west.png"
+        },
+        "animations": {
+          "The_right_hand_draws_back_to_the_ear_to_prepare_th": {
+            "east": [
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_000.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_001.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_002.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_003.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_004.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_005.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_006.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_007.png",
+              "about_to_throw_an_ob/animations/The_right_hand_draws_back_to_the_ear_to_prepare_th/east/frame_008.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-25T03:12:26.057764"
+}
