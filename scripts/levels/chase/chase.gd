@@ -72,7 +72,7 @@ func setup(l: Node, data: Dictionary) -> void:
 	cam.make_current()
 	if Game.handheld:
 		cam.zoom = Vector2.ONE * Game.zoom()    # whole-number zoom: crisp on the handheld
-	cam.position = Vector2(x + 120, -60)
+	cam.position = Vector2(x + 120 * half_width() / 240.0, -60)
 	pass  # (4.3 physics interpolation not in 4.1)
 	say(GameText.CHASE_START, "chase_start")
 
@@ -430,8 +430,13 @@ func _outro(delta: float) -> void:
 
 
 func _camera(delta: float) -> void:
-	var ahead := 90.0 + speed * 0.35
-	var target := Vector2(x + ahead, -height - 70.0)
+	# Laid out for a view 480x270 world pixels; a different view (the handheld's
+	# whole-number zoom) keeps the car at the same place on screen and the road's
+	# bottom edge in view.
+	var hw := half_width()
+	var hh := get_viewport_rect().size.y * 0.5 / cam.zoom.y
+	var ahead := (90.0 + speed * 0.35) * hw / 240.0
+	var target := Vector2(x + ahead, -height - 70.0 + (135.0 - hh))
 	cam.position = cam.position.lerp(target, 1.0 - exp(-6.0 * delta))
 	cam.rotation = lean
 	cam.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake

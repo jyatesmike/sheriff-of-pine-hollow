@@ -293,6 +293,14 @@ It needs no export templates:
 `godot --headless --export-pack "Handheld (Linux ARM64)" build/handheld/sheriff-of-pine-hollow.pck`.
 The preset sets the `handheld` feature tag, so code can check `OS.has_feature("handheld")`.
 
+### Handheld display (crisp, full screen)
+On handheld-sized screens (up to 1024x768; the RG35XX is 640x480) the game draws at the
+screen's own size instead of stretching its 480x270 picture: the world is zoomed by a whole
+number (2x on the RG35XX), so every art pixel is an exact square of screen pixels, with no
+black bars. The HUD and menus lay themselves out on the full screen. Computers and the web
+are unchanged. The code is `Game._setup_display()`; the `pixel_perfect` setting (on by
+default) turns it off.
+
 ### Installing on the RG35XX Pro (muOS)
 Needs PortMaster's **Godot/FRT 4.1.3** runtime on the card
 (`/mnt/mmc/MUOS/PortMaster/libs/frt_4.1.3.squashfs`).
