@@ -41,7 +41,7 @@ const HEROES := {
 	"sheriff": {
 		"label": "{sheriff}",
 		"win": [],                # the episode's own "win" line (in LEVELS) is used
-		"hurt": [],
+		"hurt": ["Well, that stings.", "I'm fine. Mostly.", "Not my favorite part of the job."],
 		"powerup": "",
 		"bird": [],
 		"rope_earl": "",
