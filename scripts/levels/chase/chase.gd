@@ -71,7 +71,7 @@ func setup(l: Node, data: Dictionary) -> void:
 	$View.build_backdrop(backdrop)
 	cam.make_current()
 	if Game.handheld:
-		cam.zoom = Vector2.ONE * Game.zoom()    # whole-number zoom: crisp on the handheld
+		cam.zoom = Vector2.ONE * Game.world_scale    # whole-number zoom: crisp
 	cam.position = Vector2(x + 120 * half_width() / 240.0, -60)
 	pass  # (4.3 physics interpolation not in 4.1)
 	say(GameText.CHASE_START, "chase_start")

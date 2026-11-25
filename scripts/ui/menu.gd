@@ -74,7 +74,7 @@ func _build_rows() -> void:
 			rows.append([m.sfx_volume, _bar(s.sfx_volume), true])
 			rows.append([m.voice_volume, _bar(s.voice_volume), true])
 			rows.append([m.voices_on, m.on if s.voices_on else m.off, true])
-			if not Game.handheld:     # the handheld display picks its own crisp zoom
+			if Game.desktop or not Game.handheld:     # the handheld picks its own crisp zoom
 				rows.append([m.zoom, _zoom_label(), true])
 			rows.append([m.screen_shake, m.on if s.screen_shake else m.off, true])
 			rows.append([m.scanlines, m.on if s.scanlines else m.off, true])
