@@ -32,6 +32,12 @@ func setup(data: Dictionary, _width: float, ground_y: float) -> void:
 	sky.texture = load(dir + "sky.png")
 	sky.size = Vector2(480, 270)
 	sky_layer.add_child(sky)
+	# Handheld display: the screen is bigger than the 480x270 sky, so scale it by a
+	# whole number until it covers the screen, centred (keeps its pixels crisp).
+	var vp := get_viewport().get_visible_rect().size if is_inside_tree() else Vector2(480, 270)
+	var k := ceilf(maxf(vp.x / 480.0, vp.y / 270.0))
+	if k > 1.0:
+		sky_layer.transform = Transform2D(0.0, Vector2(k, k), 0.0, (vp - Vector2(480, 270) * k) / 2.0)
 
 	for l in LAYERS:
 		var tex: Texture2D = load(dir + l[0] + ".png")

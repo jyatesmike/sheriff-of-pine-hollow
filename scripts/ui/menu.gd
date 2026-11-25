@@ -6,8 +6,11 @@ extends Node2D
 
 enum Screen { TITLE, EPISODES, SETTINGS, NAMES, CREDITS, CONTROLS }
 
-const W := 480.0
-const H := 270.0
+# The screen the menus lay themselves out on: 480x270 normally, the full
+# handheld screen in the handheld display (see Game.ui_size()).
+var W := 480.0
+var H := 270.0
+var content_y := 0.0     # how far the menu content is moved down (see _draw)
 const ROW := 14.0
 const OUTLINE := Color("24140e")
 const GOLD := Color("ffd23f")
@@ -32,6 +35,10 @@ var held := 0                  # frames a left/right key has been held (for slid
 
 
 func _ready() -> void:
+	var sz := Game.ui_size()
+	W = sz.x
+	H = sz.y
+	scale = Vector2.ONE * Game.ui_scale
 	for l in [["sky", 0.0], ["far", 6.0], ["mid", 14.0], ["main", 26.0], ["near", 40.0]]:
 		var path = "res://art/backgrounds/town/%s.png" % l[0]
 		if ResourceLoader.exists(path):
@@ -67,7 +74,8 @@ func _build_rows() -> void:
 			rows.append([m.sfx_volume, _bar(s.sfx_volume), true])
 			rows.append([m.voice_volume, _bar(s.voice_volume), true])
 			rows.append([m.voices_on, m.on if s.voices_on else m.off, true])
-			rows.append([m.zoom, _zoom_label(), true])
+			if not Game.handheld:     # the handheld display picks its own crisp zoom
+				rows.append([m.zoom, _zoom_label(), true])
 			rows.append([m.screen_shake, m.on if s.screen_shake else m.off, true])
 			rows.append([m.scanlines, m.on if s.scanlines else m.off, true])
 			rows.append([m.fancy_effects, m.on if s.fancy_effects else m.off, true])
@@ -121,12 +129,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
-		var i := _row_at(event.position)
+		var i := _row_at(event.position / Game.ui_scale)
 		if i >= 0 and rows[i][2]:
 			sel = i
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var i := _row_at(event.position)
+		var i := _row_at(event.position / Game.ui_scale)
 		if i >= 0:
 			sel = i
 			_activate(0)
@@ -162,7 +170,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _row_at(pos: Vector2) -> int:
-	# the viewport is 480x270; mouse events arrive in viewport coordinates
+	# row_rects are in content coordinates (moved down by content_y while drawing)
+	pos.y -= content_y
 	for i in row_rects.size():
 		if row_rects[i] is Rect2 and row_rects[i].has_point(pos):
 			return i
@@ -393,9 +402,15 @@ func _draw() -> void:
 		_title_scene()
 	else:
 		_backdrop()
+	# Taller screens (the handheld display): the background fills the screen; the
+	# content moves down a little so it isn't all packed at the top.
+	content_y = (H - 270.0) / 4.0
+	if screen != Screen.TITLE:
+		draw_set_transform(Vector2(0, content_y))
 	match screen:
 		Screen.TITLE:
-			_title()
+			_title()     # the sign hangs from the top of the screen
+			draw_set_transform(Vector2(0, content_y))
 			var panel := Rect2(W / 2.0 - 84, 138, 168, rows.size() * ROW + 10)
 			draw_rect(panel.grow(2), OUTLINE)
 			draw_rect(panel.grow(1), Color("8a6a42"))
@@ -414,7 +429,15 @@ func _draw() -> void:
 				draw_colored_polygon(PackedVector2Array([Vector2(W / 2.0 - hw - nudge, cy), Vector2(W / 2.0 - hw + 4 - nudge, cy - 3), Vector2(W / 2.0 - hw + 4 - nudge, cy + 3)]), c)
 				draw_colored_polygon(PackedVector2Array([Vector2(W / 2.0 + hw + nudge, cy), Vector2(W / 2.0 + hw - 4 + nudge, cy - 3), Vector2(W / 2.0 + hw - 4 + nudge, cy + 3)]), c)
 		Screen.EPISODES:
+			# The county map is laid out for 480x270: on a bigger screen, draw it at
+			# that size, centred (its stops and paths keep their places).
+			var full := Vector2(W, H)
+			W = 480.0
+			H = 270.0
+			draw_set_transform(((full - Vector2(W, H)) / 2.0).floor())
 			_map()
+			W = full.x
+			H = full.y
 		Screen.CONTROLS:
 			_heading(GameText.MENU.controls_menu)
 			draw_rect(Rect2(W / 2.0 - 177, 44, 354, rows.size() * ROW + 12), Color(0.05, 0.03, 0.08, 0.5))
@@ -435,6 +458,7 @@ func _draw() -> void:
 			_list(50.0, 330.0, true)
 			var help: String = GameText.MENU.editing_help if editing >= 0 else GameText.MENU.names_help
 			PixelFont.draw_centered(self, help, W / 2.0, 36, DIM)
+	draw_set_transform(Vector2.ZERO)
 	PixelFont.draw_centered(self, GameText.MENU.map_help if screen == Screen.EPISODES else GameText.MENU.controls, W / 2.0, H - 10, DIM)
 
 
@@ -465,6 +489,17 @@ func _title_scene() -> void:
 	# sky: banded sunset
 	var bands := [Color("2a1e4a"), Color("3a2458"), Color("562a62"), Color("7a3266"), Color("a43e5e"),
 		Color("c8564e"), Color("e07446"), Color("f09a4a"), Color("f8c060")]
+	# Taller screens (the handheld display): the scene is drawn for 270 pixels of
+	# height, so sit it on the bottom of the screen and carry the night sky up above it.
+	var lift := maxf(H - 270.0, 0.0)
+	if lift > 0.0:
+		draw_rect(Rect2(0, 0, W, lift + 1.0), bands[0])
+		for k in 40:
+			var sx := fmod(k * 61.7, W)
+			var sy := fmod(k * 29.3, lift)
+			if int(_t * 3.0 + k) % 9 != 0:
+				draw_rect(Rect2(sx, sy, 1, 1), Color(1, 0.95, 0.8, 0.7))
+		draw_set_transform(Vector2(0, lift))
 	var bh := 150.0 / bands.size()
 	for i in bands.size():
 		draw_rect(Rect2(0, i * bh, W, bh + 1), bands[i])
@@ -533,30 +568,31 @@ func _title_scene() -> void:
 		draw_line(Vector2(x, gy + 1), Vector2(x + lean, gy - 2 - (x * 7 % 4)), Color("3a5a2a"), 1.0)
 	# pines, left and right
 	_pine(Vector2(18, 232), 1.25)
-	_pine(Vector2(452, 236), 1.5)
-	_pine(Vector2(400, 240), 1.0)
+	var rx := W - 480.0     # wider screens: keep the right-hand group at the right edge
+	_pine(Vector2(452 + rx, 236), 1.5)
+	_pine(Vector2(400 + rx, 240), 1.0)
 	# Earl peeking out from behind the big pine, the Sheriff in front on the left
 	var peek := 0.5 + 0.5 * sin(_t * 0.9)
 	var et := SpriteLib.frames("earl").get_frame_texture("taunt", int(_t * 6.0) % 4)
 	if et:
-		draw_set_transform(Vector2(440 - peek * 18.0, 258), 0.0, Vector2(-2, 2))
+		draw_set_transform(Vector2(440 + rx - peek * 18.0, 258 + lift), 0.0, Vector2(-2, 2))
 		draw_texture(et, Vector2(-et.get_width() / 2.0, -et.get_height()))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		_pine(Vector2(452, 262), 1.9, true)
+		draw_set_transform(Vector2(0, lift), 0.0, Vector2.ONE)
+		_pine(Vector2(452 + rx, 262), 1.9, true)
 	var anim := "tiphat" if fmod(_t, 7.0) < 0.7 else "idle"
 	var stx := SpriteLib.frames(Game.character()).get_frame_texture(anim, int(_t * 7.0) % 4)
 	if stx:
 		draw_colored_polygon(ellipse_pts(Vector2(66, 260), Vector2(26, 4)), Color(0, 0, 0, 0.35))
-		draw_set_transform(Vector2(66, 262), 0.0, Vector2(2, 2))
+		draw_set_transform(Vector2(66, 262 + lift), 0.0, Vector2(2, 2))
 		draw_texture(stx, Vector2(-stx.get_width() / 2.0, -stx.get_height()))
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		draw_set_transform(Vector2(0, lift), 0.0, Vector2.ONE)
 	# fireflies rising out of the grass
 	for k in 10:
 		var fx := fmod(k * 53.0 + sin(_t * 0.7 + k) * 20.0, W)
 		var fy := 250.0 - fmod(_t * (6.0 + k % 4) + k * 19.0, 90.0)
 		var a := 0.5 + 0.5 * sin(_t * 4.0 + k * 1.7)
 		draw_rect(Rect2(fx, fy, 1, 1), Color(1.0, 0.95, 0.5, a))
-
+	draw_set_transform(Vector2.ZERO)
 
 static func ellipse_pts(c: Vector2, r: Vector2) -> PackedVector2Array:
 	var pts := PackedVector2Array()
@@ -564,7 +600,6 @@ static func ellipse_pts(c: Vector2, r: Vector2) -> PackedVector2Array:
 		var a := TAU * i / 18.0
 		pts.append(c + Vector2(cos(a) * r.x, sin(a) * r.y))
 	return pts
-
 
 func _hill(y: float, amp: float, freq: float, phase: float, col: Color) -> void:
 	var pts := PackedVector2Array([Vector2(0, H)])

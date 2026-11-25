@@ -70,7 +70,9 @@ func setup(l: Node, data: Dictionary) -> void:
 	move_child(backdrop, 0)
 	$View.build_backdrop(backdrop)
 	cam.make_current()
-	cam.position = Vector2(x + 120, -60)
+	if Game.handheld:
+		cam.zoom = Vector2.ONE * Game.zoom()    # whole-number zoom: crisp on the handheld
+	cam.position = Vector2(x + 120 * half_width() / 240.0, -60)
 	pass  # (4.3 physics interpolation not in 4.1)
 	say(GameText.CHASE_START, "chase_start")
 
@@ -306,10 +308,15 @@ func _traffic(delta: float) -> void:
 						break
 
 
+## Half the width of the road view, in world pixels (240 at the normal 480x270).
+func half_width() -> float:
+	return get_viewport_rect().size.x * 0.5 / cam.zoom.x
+
+
 ## Oncoming cars in your lane that are still off the right edge of the screen (for the "!" warning).
 func incoming() -> Array:
 	var out := []
-	var right := cam.position.x + 240.0
+	var right := cam.position.x + half_width()
 	for v in traffic:
 		if not v.gone and v.v < 0.0 and v.x > right - 20.0 and v.x - x < WARN_DIST:
 			out.append(v)
@@ -423,8 +430,13 @@ func _outro(delta: float) -> void:
 
 
 func _camera(delta: float) -> void:
-	var ahead := 90.0 + speed * 0.35
-	var target := Vector2(x + ahead, -height - 70.0)
+	# Laid out for a view 480x270 world pixels; a different view (the handheld's
+	# whole-number zoom) keeps the car at the same place on screen and the road's
+	# bottom edge in view.
+	var hw := half_width()
+	var hh := get_viewport_rect().size.y * 0.5 / cam.zoom.y
+	var ahead := (90.0 + speed * 0.35) * hw / 240.0
+	var target := Vector2(x + ahead, -height - 70.0 + (135.0 - hh))
 	cam.position = cam.position.lerp(target, 1.0 - exp(-6.0 * delta))
 	cam.rotation = lean
 	cam.offset = Vector2(randf_range(-1, 1), randf_range(-1, 1)) * shake

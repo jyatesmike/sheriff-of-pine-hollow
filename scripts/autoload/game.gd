@@ -26,6 +26,7 @@ var settings := {
 	"fancy_effects": true,    # lighting, particles (turn off on slow computers)
 	"character": "sheriff",   # who you play as (picked on the title screen)
 	"zoom": 0.0,              # game zoom: 0 = automatic (bigger on small handheld screens), else 1.0 / 1.25 / 1.5 / 1.75 / 2.0
+	"pixel_perfect": true,    # handheld screens: draw at the screen's own size, crisp (see _setup_display)
 	"controls": {},           # action -> {"key": physical keycode, "joy": button}: your own keys
 }
 
@@ -36,13 +37,57 @@ const CHARACTERS := ["sheriff", "dewey", "jim"]
 const ZOOMS := [1.0, 1.25, 1.5, 1.75, 2.0]
 
 
-## How far the in-game camera is zoomed in. Automatic: 1.5x on small screens
-## (handhelds like Anbernic devices), 1x on a computer.
+## How far the in-game camera is zoomed in. Handheld display: the whole number
+## picked in _setup_display() (2x on the RG35XX), so every art pixel is an exact
+## square of screen pixels. Otherwise automatic: 1.5x on small screens, 1x on a computer.
 func zoom() -> float:
+	if handheld:
+		return float(world_scale)
 	var z: float = settings.get("zoom", 0.0)
 	if z > 0.0:
 		return z
 	return 1.5 if _small_screen() else 1.0
+
+
+# ---------------- handheld display ----------------
+# The game is designed at 480x270. On a computer that picture is scaled up to the
+# window. On a small handheld screen (the RG35XX's 640x480) that scaling is uneven
+# (1.33x: blurry, jagged pixels and black bars), so instead the game draws at the
+# screen's own size: the world zoomed by a whole number (crisp), the HUD and menus
+# laid out on the full screen at a whole-number scale.
+const DESIGN := Vector2i(480, 270)
+var handheld := false     # true once the handheld display is on
+var world_scale := 1      # camera zoom in the handheld display
+var ui_scale := 1         # HUD / menu scale in the handheld display
+
+
+func _setup_display() -> void:
+	if OS.has_feature("web") or DisplayServer.get_name() == "headless":
+		return
+	if not settings.get("pixel_perfect", true):
+		return
+	var s := DisplayServer.screen_get_size()
+	# Handheld-sized screens only (a laptop keeps the normal, scaled picture).
+	if s.x <= 0 or s.y <= 0 or s.x > 1024 or s.y > 768:
+		return
+	var k := mini(s.x / 320, s.y / 180)    # show at least 320 x 180 of the world
+	if k < 2:
+		return
+	handheld = true
+	world_scale = k
+	ui_scale = maxi(1, mini(s.x / DESIGN.x, s.y / DESIGN.y))
+	var root := get_tree().root
+	root.content_scale_size = s
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+
+
+## The size the HUD and menus lay themselves out in: 480x270 normally, the
+## screen's own size (divided by the UI scale) in the handheld display.
+func ui_size() -> Vector2:
+	if handheld:
+		return Vector2(get_tree().root.content_scale_size) / ui_scale
+	return Vector2(DESIGN)
 
 
 func _small_screen() -> bool:
@@ -74,6 +119,7 @@ func _ready() -> void:
 			_default_events[a].append(e.duplicate())
 	load_game()
 	apply_controls()
+	_setup_display()
 	apply_display.call_deferred()
 	_add_scanlines()
 
