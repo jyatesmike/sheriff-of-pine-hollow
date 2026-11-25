@@ -53,10 +53,20 @@ do_bots() {
 	done
 	local fail=0
 	for i in "${!pids[@]}"; do
-		if wait "${pids[$i]}"; then
-			echo "ok   ${names[$i]}: $(grep -m1 ' WON ' "$OUT/bot_${names[$i]}.log")"
+		local log="$OUT/bot_${names[$i]}.log" rc=0
+		wait "${pids[$i]}" || rc=$?
+		if [ "$rc" = 0 ] && ! grep -q 'SCRIPT ERROR' "$log"; then
+			echo "ok   ${names[$i]}: $(grep -m1 ' WON ' "$log")"
+		elif [ "$rc" = 0 ]; then
+			# Won, but something broke on the way (e.g. a platform with bad data the
+			# level skipped): that's a failure too.
+			echo "FAIL ${names[$i]}: won, but with errors: $(grep -m1 -A1 'SCRIPT ERROR' "$log" | tr '\n' ' ')"
+			fail=1
+		elif [ "$rc" = 124 ]; then
+			echo "FAIL ${names[$i]}: no result: stopped after ${BOT_TIMEOUT}s. $(grep -m1 -A1 'SCRIPT ERROR' "$log" | tr '\n' ' ')"
+			fail=1
 		else
-			echo "FAIL ${names[$i]}: $(grep -m1 -E 'FAILED|SCRIPT ERROR' "$OUT/bot_${names[$i]}.log" || echo "no result: the game crashed or hung (stopped after ${BOT_TIMEOUT}s)")"
+			echo "FAIL ${names[$i]}: $(grep -m1 -E 'FAILED|SCRIPT ERROR' "$log" || echo "the game crashed (exit code $rc)")"
 			fail=1
 		fi
 	done
