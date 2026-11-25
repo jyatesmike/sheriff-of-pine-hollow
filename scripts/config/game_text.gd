@@ -125,6 +125,7 @@ const LEVELS := {
 		"lose": "Better luck next cast, {sheriff}!",
 		"dewey": ["Them docks sink if you stand still, {sheriff}!"],
 		"vehicle": "Row, row, row your boat! See ya, {sheriff}!",
+		"taunts": ["You're fishin' in the wrong pond, {sheriff}!", "I'm the one that got away!", "Nice cast! Too bad it missed!"],
 	},
 	"earls_big_break": {
 		"name": "{earl}'s Big Break",
