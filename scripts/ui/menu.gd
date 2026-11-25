@@ -429,7 +429,15 @@ func _draw() -> void:
 				draw_colored_polygon(PackedVector2Array([Vector2(W / 2.0 - hw - nudge, cy), Vector2(W / 2.0 - hw + 4 - nudge, cy - 3), Vector2(W / 2.0 - hw + 4 - nudge, cy + 3)]), c)
 				draw_colored_polygon(PackedVector2Array([Vector2(W / 2.0 + hw + nudge, cy), Vector2(W / 2.0 + hw - 4 + nudge, cy - 3), Vector2(W / 2.0 + hw - 4 + nudge, cy + 3)]), c)
 		Screen.EPISODES:
+			# The county map is laid out for 480x270: on a bigger screen, draw it at
+			# that size, centred (its stops and paths keep their places).
+			var full := Vector2(W, H)
+			W = 480.0
+			H = 270.0
+			draw_set_transform(((full - Vector2(W, H)) / 2.0).floor())
 			_map()
+			W = full.x
+			H = full.y
 		Screen.CONTROLS:
 			_heading(GameText.MENU.controls_menu)
 			draw_rect(Rect2(W / 2.0 - 177, 44, 354, rows.size() * ROW + 12), Color(0.05, 0.03, 0.08, 0.5))
