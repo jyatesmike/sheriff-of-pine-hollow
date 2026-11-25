@@ -5,22 +5,46 @@
 # Controls come from controller_bridge.py (buttons -> keyboard keys).
 # SELECT + START quits.
 
-GAME="/mnt/mmc/ports/mayberrymayhem"
-RUNTIME_SQFS="/mnt/mmc/MUOS/PortMaster/libs/frt_4.1.3.squashfs"
+PCK="sheriff-of-pine-hollow.pck"
+
+# A first log right next to this script, written before anything can fail, so a
+# launch that stops early still says why: ROMS/Ports/sheriff-launcher.log.
+HERE="$(cd "$(dirname "$0")" 2>/dev/null && pwd)"
+EARLY="${HERE:-/tmp}/sheriff-launcher.log"
+{
+	echo "launched $(date) as: $0"
+	echo "shell: ${BASH_VERSION:-not bash}  user: $(id -u 2>/dev/null)"
+} > "$EARLY" 2>/dev/null
+
+# The game folder and the runtime can be on either SD card (muOS: /mnt/mmc is
+# card 1, /mnt/sdcard card 2), or next to this script's ROMS folder.
+GAME=""
+for d in "$HERE/../../ports/mayberrymayhem" /mnt/mmc/ports/mayberrymayhem /mnt/sdcard/ports/mayberrymayhem; do
+	if [ -f "$d/$PCK" ]; then GAME="$(cd "$d" && pwd)"; break; fi
+done
+RUNTIME_SQFS=""
+for f in /mnt/mmc/MUOS/PortMaster/libs/frt_4.1.3.squashfs /mnt/sdcard/MUOS/PortMaster/libs/frt_4.1.3.squashfs \
+		"$HERE/../../MUOS/PortMaster/libs/frt_4.1.3.squashfs"; do
+	if [ -f "$f" ]; then RUNTIME_SQFS="$f"; break; fi
+done
+echo "game folder: ${GAME:-NOT FOUND (no ports/mayberrymayhem/$PCK on either card)}" >> "$EARLY"
+echo "runtime: ${RUNTIME_SQFS:-NOT FOUND (frt_4.1.3.squashfs: install Godot/FRT 4.1.3 with PortMaster)}" >> "$EARLY"
+[ -n "$GAME" ] || exit 1
+
 RUNTIME_DIR="$GAME/frt_runtime"
 FRT="$RUNTIME_DIR/frt_4.1.3"
-PCK="sheriff-of-pine-hollow.pck"
 LOG="$GAME/game.log"
 
-cd "$GAME" || exit 1
+cd "$GAME" || { echo "cannot enter $GAME" >> "$EARLY"; exit 1; }
 : > "$LOG"   # a fresh log each launch
-log() { echo "[launcher] $*" >> "$LOG"; }
+log() { echo "[launcher] $*" >> "$LOG"; echo "$*" >> "$EARLY"; }
+log "game folder $GAME, runtime $RUNTIME_SQFS"
 
 # Mount the Godot/FRT runtime if it isn't already.
 mounted_here=0
 if [ ! -f "$FRT" ]; then
 	mkdir -p "$RUNTIME_DIR"
-	if mount -t squashfs -o loop,ro "$RUNTIME_SQFS" "$RUNTIME_DIR"; then
+	if mount -t squashfs -o loop,ro "$RUNTIME_SQFS" "$RUNTIME_DIR" 2>> "$EARLY"; then
 		mounted_here=1
 	fi
 fi
