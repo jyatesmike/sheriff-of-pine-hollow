@@ -156,7 +156,7 @@ const LEVELS := {
 		"start": "All aboard the Earl Express, {sheriff}!",
 		"win": "End of the line, {earl}. For real this time.",
 		"lose": "Toot toot, {sheriff}! See ya next stop!",
-		"dewey": [],
+		"dewey": ["Shazam! Run the roofs, {sheriff}!"],
 	},
 }
 
