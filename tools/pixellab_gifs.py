@@ -11,9 +11,16 @@ its ground line (lowest foot in that animation) to the bottom of the cell.
 Rows with no GIF are faked from the first idle frame. Needs Pillow.
 Option --scale=2 builds double-resolution art (96 x 128 frames) for
 art/sprites/<sheet>@2x.png: make the character about twice as tall in PixelLab.
+Animations can also be PixelLab export folders of PNG frames (anim=path/to/east).
+Rows and frame counts come from the sheet's entry in data/sprites.json.
+Option --pin-feet sits each jump/fall/land/slide/skid frame on its own feet;
+--anchor=body lines frames up by the character's body instead of the canvas centre.
 Option --fix-navy recolours navy trousers back to the khaki uniform (some
 PixelLab templates ignore the character's colours).
 """
+import glob
+import json
+import os
 import sys
 from PIL import Image, ImageSequence
 
@@ -27,7 +34,10 @@ KHAKI, KHAKI_DARK = (239, 182, 129), (173, 118, 79)
 
 def load(spec, fix_navy):
     path, _, rng = spec.partition(":")
-    fr = [f.convert("RGBA") for f in ImageSequence.Iterator(Image.open(path))]
+    if os.path.isdir(path):     # a PixelLab export folder of frame_000.png, frame_001.png ...
+        fr = [Image.open(f).convert("RGBA") for f in sorted(glob.glob(os.path.join(path, "*.png")))]
+    else:
+        fr = [f.convert("RGBA") for f in ImageSequence.Iterator(Image.open(path))]
     if rng:
         a, b = (int(v) for v in rng.split("-"))
         fr = fr[a:b + 1]
@@ -63,6 +73,33 @@ def recolour(im):
     return im
 
 
+def layout_rows(sheet_name):
+    """The sheet's rows and frame counts from data/sprites.json (falls back to ROWS)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "sprites.json")
+    try:
+        lay = json.load(open(path))["sheets"][sheet_name]
+        return [(a["name"], int(a["frames"])) for a in lay["anims"]]
+    except (OSError, KeyError, ValueError):
+        return ROWS
+
+
+def body_x(frames):
+    """Horizontal centre of the character's body: the middle of the opaque pixels in
+    the lower part of the first frame (legs and belt, not an outstretched arm or rope)."""
+    f = frames[0]
+    box = f.getbbox()
+    if not box:
+        return f.width // 2
+    top = box[1] + (box[3] - box[1]) * 55 // 100
+    xs = [x for y in range(top, box[3]) for x in range(f.width) if f.getpixel((x, y))[3] > 128]
+    return sorted(xs)[len(xs) // 2] if xs else f.width // 2
+
+
+# Rows whose frames move up and down inside the PixelLab canvas (the game moves
+# the character itself): with --pin-feet each frame sits on its own feet.
+PIN_ROWS = ("jump", "fall", "land", "slide", "skid")
+
+
 def pick(fr, n, which=None):
     if which is not None:
         return [fr[min(which, len(fr) - 1)]]
@@ -85,8 +122,11 @@ def main():
         fix = "fix-navy" in fixes and k in ("jumpall", "jump", "fall", "land", "throw", "aim")
         anims[k] = load(v, fix)
     base = anims["idle"][0]
-    sheet = Image.new("RGBA", (W * COLS, H * len(ROWS)), (0, 0, 0, 0))
-    for row, (name, n) in enumerate(ROWS):
+    rows = layout_rows(sheet_name)
+    pin_feet = "pin-feet" in fixes
+    anchor_body = "anchor=body" in fixes
+    sheet = Image.new("RGBA", (W * COLS, H * len(rows)), (0, 0, 0, 0))
+    for row, (name, n) in enumerate(rows):
         src = anims.get(name)
         if name in ("jump", "fall", "land") and src is None and "jumpall" in anims:
             src = anims["jumpall"]
@@ -104,13 +144,15 @@ def main():
             else:
                 frames = pick(src, n)
         ground = max(f.getbbox()[3] for f in (src or [base]))
+        cx = body_x(src or [base]) if anchor_body else None
         for i, f in enumerate(frames):
             dx, dy = 0, 0
             if fake:
                 dy = {"run": [0, -1, -2, -1] * 2, "idle": [0, -1] * 2}.get(name, [0] * 8)[i % 8] * S
                 dx = ([-1, 1][i % 2] if name in ("hurt", "stunned", "fumble") else 0) * S
-            x = i * W + W // 2 - f.width // 2 + dx
-            y = row * H + H - ground + dy
+            x = i * W + W // 2 - (cx if cx is not None else f.width // 2) + dx
+            feet = f.getbbox()[3] if (pin_feet and name in PIN_ROWS and f.getbbox()) else ground
+            y = row * H + H - feet + dy
             cell = Image.new("RGBA", sheet.size, (0, 0, 0, 0))
             cell.paste(f, (x, y), f)
             # keep each frame inside its own cell
