@@ -100,6 +100,8 @@ func _physics_process(delta: float) -> void:
 	var dir := _input_dir()
 	var on_floor := is_on_floor()
 	invuln = maxi(invuln - 1, 0)
+	if power == "mower" and on_floor and input_enabled and Input.is_action_just_pressed("jump"):
+		_end_power()               # jumping hops Jim off the mower
 	_power_step(delta)
 	if hurt_t > 0:
 		hurt_t -= 1
@@ -394,14 +396,19 @@ func _power_step(delta: float) -> void:
 		_mower_front.modulate.a = 0.4 if ending else 1.0
 		Audio.loop("engine", power_t > 0.0, 1.4 + absf(velocity.x) / 600.0, 0.5)
 	if power_t <= 0.0:
-		if power == "mower":
-			_mower_front.visible = false
-			_mower_back.visible = false
-			Audio.loop("engine", false)
-		power = ""
-		power_t = 0.0
-		visual.modulate = Color.WHITE
-		invuln = 40           # a moment's grace as it wears off
+		_end_power()
+
+
+## Ends the current power-up right away: when it times out, or Jim jumps off the mower.
+func _end_power() -> void:
+	if power == "mower":
+		_mower_front.visible = false
+		_mower_back.visible = false
+		Audio.loop("engine", false)
+	power = ""
+	power_t = 0.0
+	visual.modulate = Color.WHITE
+	invuln = 40           # a moment's grace as it wears off
 
 
 func heal() -> void:

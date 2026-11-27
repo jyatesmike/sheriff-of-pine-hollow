@@ -112,8 +112,9 @@ def check_sprites() -> None:
                 err(f"data/sprites.json: {name}.{a['name']} has {a['frames']} frames (1-{SHEET_COLS} fit in a row)")
             if a.get("fps", 0) <= 0:
                 err(f"data/sprites.json: {name}.{a['name']} fps must be > 0")
+    standalone = {"props", "mower_front", "mower_back"}
     for png in sorted((ROOT / "art/sprites").glob("*.png")):
-        if png.stem.removesuffix("@2x") not in layout.get("sheets", {}) and png.stem != "props":
+        if png.stem.removesuffix("@2x") not in layout.get("sheets", {}) and png.stem not in standalone:
             warn(f"{rel(png)}: not listed in data/sprites.json (unused?)")
 
 

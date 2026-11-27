@@ -6,7 +6,22 @@ extends LevelObject
 
 const BARREL_SPEED := 120.0
 
+# PixelLab art: the cart tipping over, one frame per canvas (same alignment
+# throughout, so one offset works for all of them). Not verified in a live
+# editor (no Godot binary in this sandbox) — check it sits on the sidewalk.
+const CART_TEX := preload("res://art/sprites/props/fruit_cart.png")
+const TIP_FRAMES := [
+	preload("res://art/sprites/props/fruit_cart/frame_1.png"),
+	preload("res://art/sprites/props/fruit_cart/frame_2.png"),
+	preload("res://art/sprites/props/fruit_cart/frame_3.png"),
+	preload("res://art/sprites/props/fruit_cart/frame_4.png"),
+	preload("res://art/sprites/props/fruit_cart/frame_5.png"),
+	preload("res://art/sprites/props/fruit_cart/frame_6.png"),
+]
+const CART_OFFSET := Vector2(-48, -64)
+
 var tipped := false
+var tip_t := 0                # frames since tipping started (picks TIP_FRAMES)
 var barrels: Array = []      # {x, y, vy, spin, dead}
 var apples: Array = []       # {x, y, vx, vy, got}
 var spawn_t := 0
@@ -15,6 +30,8 @@ var to_spawn := 0
 
 func step(delta: float) -> void:
 	var p := player()
+	if tipped:
+		tip_t += 1
 	if not tipped and p.global_position.x > o.get("trigger", 0) * TILE:
 		tipped = true
 		to_spawn = 3
@@ -73,21 +90,8 @@ func step(delta: float) -> void:
 
 func _draw() -> void:
 	# the cart (upright until tipped)
-	var wood := Color("a87a46")
-	if not tipped:
-		outlined_rect(Rect2(-22, -26, 44, 16), wood)
-		for k in 5:
-			draw_circle(Vector2(-16 + k * 8, -28), 4.0, Color("d8342a"))
-		draw_circle(Vector2(-14, -6), 6.0, OUTLINE)
-		draw_circle(Vector2(14, -6), 6.0, OUTLINE)
-		draw_circle(Vector2(-14, -6), 4.5, Color("5a3a22"))
-		draw_circle(Vector2(14, -6), 4.5, Color("5a3a22"))
-	else:
-		draw_set_transform(Vector2(10, -10), 0.5, Vector2.ONE)
-		outlined_rect(Rect2(-22, -10, 44, 16), wood)
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		draw_circle(Vector2(26, -6), 6.0, OUTLINE)
-		draw_circle(Vector2(26, -6), 4.5, Color("5a3a22"))
+	var cart_tex: Texture2D = TIP_FRAMES[clampi(tip_t / 4, 0, 5)] if tipped else CART_TEX
+	draw_texture(cart_tex, CART_OFFSET)
 	var tex := SpriteLib.prop("barrel")
 	for b in barrels:
 		draw_set_transform(Vector2(b.x, b.y - 9), b.spin, Vector2.ONE)
