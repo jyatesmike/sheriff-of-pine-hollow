@@ -2,8 +2,8 @@
  "id": "main_street",
  "theme": "town",
  "role": "sheriff",
- "width_tiles": 301,
- "fence_x": 293,
+ "width_tiles": 296,
+ "fence_x": 288,
  "player_start": 6,
  "earl_start": 16,
  "ground": [
@@ -13,12 +13,12 @@
   ],
   [
    92,
-   301
+   296
   ]
  ],
  "crates": [
   {
-   "x": 177,
+   "x": 172,
    "stack": 0
   }
  ],
@@ -53,12 +53,12 @@
   42,
   48,
   96,
-  185,
-  191,
-  207,
-  231,
-  279,
-  265
+  180,
+  186,
+  202,
+  226,
+  274,
+  260
  ],
  "sky_pies": [
   [
@@ -82,47 +82,47 @@
    5
   ],
   [
-   103,
+   102,
    13
   ],
   [
-   108,
+   107,
    14
   ],
   [
-   119,
+   117,
    13
   ],
   [
-   124,
+   122,
    14
   ],
   [
-   139,
+   132,
    13
   ],
   [
-   144,
+   137,
    14
   ],
   [
-   157,
+   152,
    20
   ],
   [
-   162,
+   157,
    21
   ]
  ],
  "golden_pie": [
   {
-   "x": 160,
+   "x": 155,
    "h": 24
   }
  ],
  "dewey": [
   44,
-  231
+  226
  ],
  "hooks": [
   [
@@ -148,17 +148,17 @@
   },
   {
    "type": "flowerpot",
-   "x": 118,
+   "x": 112,
    "h": 9
   },
   {
    "type": "flowerpot",
-   "x": 135,
+   "x": 132,
    "h": 9
   },
   {
    "type": "flowerpot",
-   "x": 162,
+   "x": 152,
    "h": 9
   },
   {
@@ -192,35 +192,35 @@
   },
   {
    "type": "building",
-   "x": 111,
+   "x": 110,
    "w": 10,
    "h": 16,
    "style": "diner"
   },
   {
    "type": "building",
-   "x": 122,
+   "x": 120,
    "w": 10,
    "h": 16,
    "style": "barbershop"
   },
   {
    "type": "building",
-   "x": 133,
+   "x": 130,
    "w": 10,
    "h": 16,
    "style": "post_office"
   },
   {
    "type": "building",
-   "x": 144,
+   "x": 140,
    "w": 10,
    "h": 16,
    "style": "grocery"
   },
   {
    "type": "building",
-   "x": 155,
+   "x": 150,
    "w": 10,
    "h": 16,
    "style": "dressmaker"
@@ -232,38 +232,56 @@
   },
   {
    "type": "chimney",
-   "x": 138,
+   "x": 135,
    "h": 16
   },
   {
    "type": "zipline",
-   "x": 160,
+   "x": 155,
    "h": 16.6,
-   "x2": 177,
+   "x2": 172,
    "h2": 1.6
   },
   {
    "type": "grocer",
-   "x": 201,
-   "trigger": 173
+   "x": 196,
+   "trigger": 168
   },
   {
    "type": "patrol_car",
-   "x": 213
+   "x": 208
   },
   {
    "type": "fire_bell",
-   "x": 257,
+   "x": 252,
    "h": 5
   },
   {
    "type": "water_tower",
-   "x": 273,
+   "x": 268,
    "h": 8
   },
   {
    "type": "checkpoint",
    "x": 94
+  },
+  {
+   "type": "favor",
+   "npc": "aunt",
+   "item": "pie_tin",
+   "x": 182,
+   "item_x": 125,
+   "item_h": 16.8
+  },
+  {
+   "type": "powerup",
+   "x": 12,
+   "h": 1.2
+  },
+  {
+   "type": "powerup",
+   "x": 234,
+   "h": 1.2
   },
   {
    "type": "star",
@@ -279,24 +297,6 @@
    "type": "star",
    "x": 86,
    "h": 3.5
-  },
-  {
-   "type": "favor",
-   "npc": "aunt",
-   "item": "pie_tin",
-   "x": 187,
-   "item_x": 125,
-   "item_h": 16.8
-  },
-  {
-   "type": "powerup",
-   "x": 12,
-   "h": 1.2
-  },
-  {
-   "type": "powerup",
-   "x": 234,
-   "h": 1.2
   }
  ],
  "flags": {},
@@ -323,12 +323,12 @@
    48
   ],
   [
-   237,
-   245
+   232,
+   240
   ],
   [
-   245,
-   253
+   240,
+   248
   ]
  ]
 }
