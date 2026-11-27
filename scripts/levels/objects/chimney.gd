@@ -6,6 +6,23 @@ const PERIOD := 150          # frames between puffs
 const PUFF := 40             # frames the updraft lasts
 const LIFT := -560.0
 
+# PixelLab art: the chimney and its smoke are one sheet per frame (the smoke
+# is drawn emanating from this specific chimney), so puffing just swaps which
+# whole frame is shown. TEX_OFFSET anchors the sheet's roof contact to `top`
+# (not verified in a live editor — no Godot binary in this sandbox).
+const CHIMNEY_TEX := preload("res://art/sprites/props/chimney.png")
+const SMOKE_FRAMES := [
+	preload("res://art/sprites/props/chimney_smoke/frame_1.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_2.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_3.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_4.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_5.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_6.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_7.png"),
+	preload("res://art/sprites/props/chimney_smoke/frame_8.png"),
+]
+const TEX_OFFSET := Vector2(-16, -42)
+
 var t := 0
 var top := 0.0
 
@@ -29,15 +46,7 @@ func step(_delta: float) -> void:
 
 
 func _draw() -> void:
-	outlined_rect(Rect2(-8, top, 16, 22), Color("8a3a28"))
-	for y in [top + 5, top + 11, top + 17]:
-		draw_rect(Rect2(-8, y, 16, 1), Color("5a2418"))
-	outlined_rect(Rect2(-10, top - 3, 20, 4), Color("5a5048"))
-	# smoke: a wisp before, a big column during the puff
+	var tex := CHIMNEY_TEX
 	if t < PUFF:
-		for k in 6:
-			var r := 5.0 + k * 1.5
-			var yy := top - 8 - k * 11 - (t % 10)
-			draw_circle(Vector2(sin(k * 1.7 + t * 0.2) * 3.0, yy), r, Color(0.85, 0.85, 0.82, 0.75 - k * 0.1))
-	elif t > PERIOD - 30:
-		draw_circle(Vector2(0, top - 6), 3.0, Color(0.8, 0.8, 0.8, 0.5))
+		tex = SMOKE_FRAMES[clampi(t * SMOKE_FRAMES.size() / PUFF, 0, SMOKE_FRAMES.size() - 1)]
+	draw_texture(tex, Vector2(0, top) + TEX_OFFSET)
