@@ -1,0 +1,314 @@
+{
+  "group_id": "37e6593c-a9eb-4595-88b6-906e01510068",
+  "states": [
+    {
+      "character": {
+        "id": "e6b862db-4d88-44b7-9c31-ff431292138d",
+        "name": "Idle",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, pose, and any objects he is holding as shown in the reference.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-25T22:17:11.842208+00:00"
+      },
+      "folder": "Idle",
+      "frames": {
+        "rotations": {
+          "south": "Idle/rotations/south.png",
+          "south-east": "Idle/rotations/south-east.png",
+          "east": "Idle/rotations/east.png",
+          "north-east": "Idle/rotations/north-east.png",
+          "north": "Idle/rotations/north.png",
+          "north-west": "Idle/rotations/north-west.png",
+          "west": "Idle/rotations/west.png",
+          "south-west": "Idle/rotations/south-west.png"
+        },
+        "animations": {
+          "Taking_Punch": {
+            "east": [
+              "Idle/animations/Taking_Punch/east/frame_000.png",
+              "Idle/animations/Taking_Punch/east/frame_001.png",
+              "Idle/animations/Taking_Punch/east/frame_002.png",
+              "Idle/animations/Taking_Punch/east/frame_003.png",
+              "Idle/animations/Taking_Punch/east/frame_004.png",
+              "Idle/animations/Taking_Punch/east/frame_005.png"
+            ]
+          },
+          "Slide": {
+            "east": [
+              "Idle/animations/Slide/east/frame_000.png",
+              "Idle/animations/Slide/east/frame_001.png",
+              "Idle/animations/Slide/east/frame_002.png",
+              "Idle/animations/Slide/east/frame_003.png",
+              "Idle/animations/Slide/east/frame_004.png",
+              "Idle/animations/Slide/east/frame_005.png"
+            ]
+          },
+          "Jim_facing_right_in_side_view_raises_his_right_han": {
+            "east": [
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_000.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_001.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_002.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_003.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_004.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_005.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_006.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_007.png",
+              "Idle/animations/Jim_facing_right_in_side_view_raises_his_right_han/east/frame_008.png"
+            ]
+          },
+          "Running_Jump": {
+            "east": [
+              "Idle/animations/Running_Jump/east/frame_000.png",
+              "Idle/animations/Running_Jump/east/frame_001.png",
+              "Idle/animations/Running_Jump/east/frame_002.png",
+              "Idle/animations/Running_Jump/east/frame_003.png",
+              "Idle/animations/Running_Jump/east/frame_004.png",
+              "Idle/animations/Running_Jump/east/frame_005.png",
+              "Idle/animations/Running_Jump/east/frame_006.png",
+              "Idle/animations/Running_Jump/east/frame_007.png"
+            ]
+          },
+          "Walking": {
+            "east": [
+              "Idle/animations/Walking/east/frame_000.png",
+              "Idle/animations/Walking/east/frame_001.png",
+              "Idle/animations/Walking/east/frame_002.png",
+              "Idle/animations/Walking/east/frame_003.png",
+              "Idle/animations/Walking/east/frame_004.png",
+              "Idle/animations/Walking/east/frame_005.png",
+              "Idle/animations/Walking/east/frame_006.png",
+              "Idle/animations/Walking/east/frame_007.png"
+            ]
+          },
+          "Breathing_Idle": {
+            "east": [
+              "Idle/animations/Breathing_Idle/east/frame_000.png",
+              "Idle/animations/Breathing_Idle/east/frame_001.png",
+              "Idle/animations/Breathing_Idle/east/frame_002.png",
+              "Idle/animations/Breathing_Idle/east/frame_003.png"
+            ]
+          },
+          "Raise_both_hands_to_adjust_sunglasses_on_the_face": {
+            "south": [
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_000.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_001.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_002.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_003.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_004.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_005.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_006.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_007.png",
+              "Idle/animations/Raise_both_hands_to_adjust_sunglasses_on_the_face/south/frame_008.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "574f4d74-5927-4f2e-bdc9-36d100390dce",
+        "name": "facing east,  arm ba",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, pose, and any objects he is holding as shown in the reference, with a small rock in one hand.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-27T02:16:43.227315+00:00"
+      },
+      "folder": "facing_east_arm_ba",
+      "frames": {
+        "rotations": {
+          "south": "facing_east_arm_ba/rotations/south.png",
+          "south-east": "facing_east_arm_ba/rotations/south-east.png",
+          "east": "facing_east_arm_ba/rotations/east.png",
+          "north-east": "facing_east_arm_ba/rotations/north-east.png",
+          "north": "facing_east_arm_ba/rotations/north.png",
+          "north-west": "facing_east_arm_ba/rotations/north-west.png",
+          "west": "facing_east_arm_ba/rotations/west.png",
+          "south-west": "facing_east_arm_ba/rotations/south-west.png"
+        },
+        "animations": {
+          "Throw_Object": {
+            "east": [
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_000.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_001.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_002.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_003.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_004.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_005.png",
+              "facing_east_arm_ba/animations/Throw_Object/east/frame_006.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "14786dd1-7f6d-4a10-bf9b-648b4e3b24d5",
+        "name": "Create one 96\u00d7128 pi",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, pose, and any objects he is holding as shown in the reference.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-27T02:27:39.366966+00:00"
+      },
+      "folder": "Create_one_96128_pi",
+      "frames": {
+        "rotations": {
+          "south": "Create_one_96128_pi/rotations/south.png",
+          "south-east": "Create_one_96128_pi/rotations/south-east.png",
+          "east": "Create_one_96128_pi/rotations/east.png",
+          "north-east": "Create_one_96128_pi/rotations/north-east.png",
+          "north": "Create_one_96128_pi/rotations/north.png",
+          "north-west": "Create_one_96128_pi/rotations/north-west.png",
+          "west": "Create_one_96128_pi/rotations/west.png",
+          "south-west": "Create_one_96128_pi/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    },
+    {
+      "character": {
+        "id": "c1462dd6-1b8d-4262-820b-3ba1eb2da0b6",
+        "name": "Create one 96\u00d7128 pi",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, pose, and any objects he is holding as shown in the reference.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-27T02:35:20.523145+00:00"
+      },
+      "folder": "Create_one_96128_pi_2",
+      "frames": {
+        "rotations": {
+          "south": "Create_one_96128_pi_2/rotations/south.png",
+          "south-east": "Create_one_96128_pi_2/rotations/south-east.png",
+          "east": "Create_one_96128_pi_2/rotations/east.png",
+          "north-east": "Create_one_96128_pi_2/rotations/north-east.png",
+          "north": "Create_one_96128_pi_2/rotations/north.png",
+          "north-west": "Create_one_96128_pi_2/rotations/north-west.png",
+          "west": "Create_one_96128_pi_2/rotations/west.png",
+          "south-west": "Create_one_96128_pi_2/rotations/south-west.png"
+        },
+        "animations": {
+          "Animate_the_same_Grandad_character_from_the_refere": {
+            "north": [
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_000.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_001.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_002.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_003.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_004.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_005.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_006.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_007.png",
+              "Create_one_96128_pi_2/animations/Animate_the_same_Grandad_character_from_the_refere/north/frame_008.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "c24a6454-b5f3-4da0-a4ba-b8a1c7204e7f",
+        "name": "Side view facing rig",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, and pose as shown in the reference, and have him hold a coiled green garden hose in his right hand, its brass nozzle end in his other hand.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-27T02:43:31.234765+00:00"
+      },
+      "folder": "Side_view_facing_rig",
+      "frames": {
+        "rotations": {
+          "south": "Side_view_facing_rig/rotations/south.png",
+          "south-east": "Side_view_facing_rig/rotations/south-east.png",
+          "east": "Side_view_facing_rig/rotations/east.png",
+          "north-east": "Side_view_facing_rig/rotations/north-east.png",
+          "north": "Side_view_facing_rig/rotations/north.png",
+          "north-west": "Side_view_facing_rig/rotations/north-west.png",
+          "west": "Side_view_facing_rig/rotations/west.png",
+          "south-west": "Side_view_facing_rig/rotations/south-west.png"
+        },
+        "animations": {
+          "Jim_swings_the_garden_hose_in_a_loop_over_his_head": {
+            "east": [
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_000.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_001.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_002.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_003.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_004.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_005.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_006.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_007.png",
+              "Side_view_facing_rig/animations/Jim_swings_the_garden_hose_in_a_loop_over_his_head/east/frame_008.png"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "character": {
+        "id": "dfe94981-47e6-4bbd-af45-d97f90e8b307",
+        "name": "Jim stands facing ri",
+        "prompt": "Create one full-body, front-facing retro pixel art sprite that faithfully matches the reference image. Preserve his apparent age, facial features, wrinkles, expression, hair color, hairstyle, and body proportions exactly as shown. Keep his clothing, accessories, pose, and any objects he is holding as shown in the reference.\n\nUse crisp pixel edges, clean outlines, and simple shading. Center the entire figure from cap to shoes on a transparent 96\u00d7128 canvas with a few pixels of padding.",
+        "size": {
+          "width": 128,
+          "height": 128
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-11-27T02:54:59.104268+00:00"
+      },
+      "folder": "Jim_stands_facing_ri",
+      "frames": {
+        "rotations": {
+          "south": "Jim_stands_facing_ri/rotations/south.png",
+          "south-east": "Jim_stands_facing_ri/rotations/south-east.png",
+          "east": "Jim_stands_facing_ri/rotations/east.png",
+          "north-east": "Jim_stands_facing_ri/rotations/north-east.png",
+          "north": "Jim_stands_facing_ri/rotations/north.png",
+          "north-west": "Jim_stands_facing_ri/rotations/north-west.png",
+          "west": "Jim_stands_facing_ri/rotations/west.png",
+          "south-west": "Jim_stands_facing_ri/rotations/south-west.png"
+        },
+        "animations": {
+          "Jim_facing_right_in_side_view_wags_his_index_finge": {
+            "east": [
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_000.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_001.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_002.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_003.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_004.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_005.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_006.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_007.png",
+              "Jim_stands_facing_ri/animations/Jim_facing_right_in_side_view_wags_his_index_finge/east/frame_008.png"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-11-27T03:02:31.485688"
+}
