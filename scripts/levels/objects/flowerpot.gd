@@ -103,12 +103,12 @@ func _draw() -> void:
 	if state < 3:
 		var wob := sin(t * 1.2) * 2.0 if state == 1 else 0.0
 		var py := y if state == 2 else box_y - 6.0
-		var pot_tex := POT_FALL_FRAMES[clampi(fall_t / 3, 0, 7)] if state == 2 else POT_TEX
+		var pot_tex: Texture2D = POT_FALL_FRAMES[clampi(fall_t / 3, 0, 7)] if state == 2 else POT_TEX
 		draw_texture(pot_tex, Vector2(wob, py) + POT_OFFSET)
 		if state >= 1:
 			# shadow on the ground grows as the pot falls
 			var k := clampf(1.0 - absf(py) / absf(box_y), 0.2, 1.0)
 			draw_rect(Rect2(-8 * k - 2, -2, 16 * k + 4, 3), Color(0, 0, 0, 0.35))
 	else:
-		var smash_tex := POT_SMASH_FRAMES[clampi(close_t / 3, 0, 7)]
+		var smash_tex: Texture2D = POT_SMASH_FRAMES[clampi(close_t / 3, 0, 7)]
 		draw_texture(smash_tex, Vector2(0, box_y - 6.0) + POT_OFFSET)
