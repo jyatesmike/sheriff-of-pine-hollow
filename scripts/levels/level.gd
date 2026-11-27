@@ -20,6 +20,8 @@ const LAYER_ONEWAY := 2
 const PIES_PER_HEART := 10
 const START_ROCKS := 3
 const MAX_ROCKS := 5
+const AWNING_BOUNCE := -700.0
+const AWNING_BOUNCE_HELD := -820.0
 
 const EarlScene := preload("res://scenes/actors/earl.tscn")
 const HenScene := preload("res://scenes/actors/hen.tscn")
@@ -164,6 +166,7 @@ func _physics_process(delta: float) -> void:
 	_apply_mud()
 	_check_hens()
 	_check_crates()
+	_check_platforms()
 	_check_pies()
 	_mow()
 	_check_stones()
@@ -882,6 +885,25 @@ func _mow() -> void:
 			p.position = player.global_position + Vector2(player.facing * 40.0, -14.0)
 			pies.add_child(p)
 			popup(p.position + Vector2(0, -16), "FOUND ONE!", Color("8ad06a"))
+
+
+## A platform with "bounce": true (e.g. a shop awning) launches you up instead
+## of just holding you: {"type": platforms entry, "x", "w", "h", "bounce": true}.
+## Hold jump for a higher bounce, same as the clothesline spring.
+func _check_platforms() -> void:
+	if not player.is_on_floor():
+		return
+	for pf in data.platforms:
+		if not pf.get("bounce", false):
+			continue
+		var top: float = GROUND_Y - pf.h * TILE
+		var x: float = player.global_position.x
+		if absf(player.global_position.y - top) < 3.0 and x > pf.x * TILE and x < (pf.x + pf.w) * TILE:
+			var held := Input.is_action_pressed("jump")
+			player.velocity.y = AWNING_BOUNCE_HELD if held else AWNING_BOUNCE
+			player.jumping = false
+			player.visual.squash(Vector2(0.8, 1.25))
+			Audio.sfx("jump", 0.7)
 
 
 ## A powered-up mower plows straight through crates instead of stopping at them.
