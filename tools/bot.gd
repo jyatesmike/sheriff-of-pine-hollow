@@ -27,15 +27,22 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	frames += 1
+	# Checked first, so a run whose code errors every frame still ends.
+	if frames > 60 * 180:
+		_give_up("ran out of time")
+		return
 	if level == null or not is_instance_valid(level):
 		var s := get_tree().current_scene
-		if s is Level:
-			if Game.level_index != target:
-				Game.go_to_level(target)
-				return
+		if s is Level and Game.level_index != target:
+			Game.go_to_level(target)
+			return
+		if s is Level and _built(s):
 			level = s
 			level.player.fell_out.connect(func(): falls += 1)
 			level.player.hurt_taken.connect(func(): hurts += 1)
+		elif frames > 60 * 10:
+			# A level whose data is broken stops half-built (see the errors above).
+			_give_up("the level never finished loading")
 		return
 	var p := level.player
 	if god:
@@ -231,10 +238,8 @@ func _physics_process(_delta: float) -> void:
 			tag, level.time, level.pies_got, level.pies_total, level.golden_got, level.score,
 			p.hearts, hurts, falls, " (god mode)" if god else ""])
 		get_tree().quit(0)
-	elif level.phase == Level.Phase.LOST or frames > 60 * 180:
-		print("%s FAILED (%s) at x=%d of %d, hurts=%d falls=%d" % [tag, Level.Phase.keys()[level.phase],
-			p.global_position.x, level.corner_x(), hurts, falls])
-		get_tree().quit(1)
+	elif level.phase == Level.Phase.LOST:
+		_give_up("LOST")
 
 
 # --- car chase: gas, ease off for curves, floor it at the ramp, dodge, bump ----
@@ -344,3 +349,19 @@ func _next_shore(x: float) -> float:
 		if seg[0] * Level.TILE > x:
 			return seg[0] * Level.TILE
 	return INF
+
+
+## Did the level build completely? (Bad level data stops it part way.)
+func _built(s: Level) -> bool:
+	return s.player != null and s.world != null \
+			and s.world.get_node_or_null("Objects") != null
+
+
+func _give_up(why: String) -> void:
+	var tag := "L%d %s" % [target + 1, Game.level_id()]
+	if level != null and is_instance_valid(level) and level.player != null:
+		print("%s FAILED (%s) at x=%d of %d, hurts=%d falls=%d" % [tag, why,
+			level.player.global_position.x, level.corner_x(), hurts, falls])
+	else:
+		print("%s FAILED (%s)" % [tag, why])
+	get_tree().quit(1)

@@ -193,6 +193,28 @@ def check_levels(areas: set[str]) -> None:
             v = lv.get(key)
             if not isinstance(v, (int, float)) or (width and not 0 <= v < width):
                 err(f"{where}: {key}={v} must be a number inside the level (0-{width})")
+        num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+        ground = lv.get("ground")
+        if not isinstance(ground, list) or not ground:
+            err(f"{where}: ground must be a list of [start, end] tile ranges")
+            ground = []
+        last_end = None
+        for i, g in enumerate(ground):
+            if not (isinstance(g, list) and len(g) == 2 and num(g[0]) and num(g[1]) and g[0] < g[1]):
+                err(f"{where}: ground[{i}]={g} must be [start, end] with start < end")
+                continue
+            if last_end is not None and g[0] < last_end:
+                err(f"{where}: ground[{i}] overlaps or comes before the previous range")
+            last_end = g[1]
+        for key, fields in (("platforms", ("x", "w", "h")), ("crates", ("x", "stack"))):
+            items = lv.get(key, [])
+            if not isinstance(items, list):
+                err(f"{where}: {key} must be a list")
+                continue
+            for i, it in enumerate(items):
+                bad = [f for f in fields if not (isinstance(it, dict) and num(it.get(f)))]
+                if bad:
+                    err(f"{where}: {key}[{i}]={it} needs numbers for {', '.join(bad)}")
         for i, o in enumerate(lv.get("objects", [])):
             t = o.get("type") if isinstance(o, dict) else None
             if t not in object_types:
