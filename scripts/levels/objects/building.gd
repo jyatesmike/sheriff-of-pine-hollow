@@ -1,10 +1,20 @@
 # A storefront you can stand on top of: the street runs in front of it, and
 # the flat roof is a platform. With "ladder": true a fire escape on its left
-# side lets you climb up (hold up / W).
-#   {"type": "building", "x": 100, "w": 10, "h": 7, "ladder": true, "style": "brick"}
+# side lets you climb up (hold up / W). Real PixelLab art, one of 6 looks
+# picked by "style"; each is drawn at its native 10x16-tile size (160x256px).
+#   {"type": "building", "x": 100, "w": 10, "h": 16, "ladder": true, "style": "hardware"}
 extends LevelObject
 
 const CLIMB_SPEED := 95.0
+
+const TEX := {
+	"hardware": preload("res://art/sprites/buildings/hardware.png"),
+	"diner": preload("res://art/sprites/buildings/diner.png"),
+	"barbershop": preload("res://art/sprites/buildings/barbershop.png"),
+	"post_office": preload("res://art/sprites/buildings/post_office.png"),
+	"grocery": preload("res://art/sprites/buildings/grocery.png"),
+	"dressmaker": preload("res://art/sprites/buildings/dressmaker.png"),
+}
 
 var w := 0.0
 var top := 0.0
@@ -13,7 +23,7 @@ var ladder_x := 0.0
 
 func _setup() -> void:
 	w = o.get("w", 10) * TILE
-	top = tiles_up(o.get("h", 7))
+	top = tiles_up(o.get("h", 16))
 	add_box(Rect2(0, top, w, 6), 2, true)
 	ladder_x = 10.0
 
@@ -55,31 +65,9 @@ func ride_step(p: Player, delta: float) -> bool:
 
 
 func _draw() -> void:
-	var style: String = o.get("style", "brick")
-	var base := Color("9a4a32") if style == "brick" else (Color("8aa0b8") if style == "blue" else Color("c8b488"))
-	draw_rect(Rect2(-1, top - 1, w + 2, -top + 1), OUTLINE)
-	draw_rect(Rect2(0, top, w, -top), base)
-	if style == "brick":
-		for y in range(int(top) + 2, 0, 4):
-			draw_rect(Rect2(0, y, w, 1), base.darkened(0.25))
-	else:
-		for y in range(int(top) + 2, 0, 5):
-			draw_rect(Rect2(0, y, w, 1), base.lightened(0.2))
-	draw_rect(Rect2(-3, top - 4, w + 6, 5), base.darkened(0.4))           # roof edge
-	draw_rect(Rect2(-3, top - 4, w + 6, 1), base.lightened(0.3))
-	var floors := int(-top / 48.0)
-	for f in floors:
-		for k in int(w / 40.0):
-			var wx := 22.0 + k * 40.0
-			var wy := top + 12.0 + f * 48.0
-			if wx + 16 < w:
-				draw_rect(Rect2(wx - 1, wy - 1, 18, 22), Color("e8e0cc"))
-				draw_rect(Rect2(wx, wy, 16, 20), Color("2a3a5a"))
-				draw_rect(Rect2(wx + 2, wy + 2, 4, 16), Color("6a8ab0"))
-	# shop front at street level
-	draw_rect(Rect2(8, -34, w - 16, 34), Color("3a2414"))
-	draw_rect(Rect2(10, -32, w - 20, 22), Color("2e4060"))
-	draw_rect(Rect2(12, -30, 6, 18), Color("8ab0d0"))
+	var style: String = o.get("style", "hardware")
+	var tex: Texture2D = TEX.get(style, TEX["hardware"])
+	draw_texture_rect(tex, Rect2(0, top, w, -top), false)
 	if _has_ladder():
 		var lx := ladder_x
 		for side in [-6.0, 6.0]:
