@@ -64,6 +64,8 @@ var stars_total := 0
 var favor_done := false
 var favor_obj: Node2D             # this level's favor (favor.gd), if any
 var mud_zones: Array = []        # [x0, x1, kind]: "deep" (slow) or "slick" (slippery)
+var crate_bodies: Array = []     # StaticBody2D per data.crates entry, so a powered-up mower can plow one
+var crates_destroyed: Dictionary = {}    # data.crates index -> true; shared with Terrain for drawing
 
 @onready var world: Node2D = $World
 @onready var actors: Node2D = $World/Actors
@@ -87,6 +89,7 @@ func _ready() -> void:
 	_build_platforms()
 	$Background.setup(data, width_px, GROUND_Y)
 	$World/Terrain.setup(data, GROUND_Y, text)
+	$World/Terrain.crates_destroyed = crates_destroyed
 	lamp_xs = $World/Terrain.lamp_xs()
 	_build_tiles()
 
@@ -160,6 +163,7 @@ func _physics_process(delta: float) -> void:
 		return                 # the chase handles its own collisions
 	_apply_mud()
 	_check_hens()
+	_check_crates()
 	_check_pies()
 	_mow()
 	_check_stones()
@@ -880,6 +884,30 @@ func _mow() -> void:
 			popup(p.position + Vector2(0, -16), "FOUND ONE!", Color("8ad06a"))
 
 
+## A powered-up mower plows straight through crates instead of stopping at them.
+func _check_crates() -> void:
+	if player.power != "mower":
+		return
+	var pr: Rect2 = player.body_rect()
+	for i in data.crates.size():
+		if crates_destroyed.has(i):
+			continue
+		var c = data.crates[i]
+		var r := Rect2(c.x * TILE, GROUND_Y - CRATE * (c.stack + 1), CRATE, CRATE)
+		if r.grow(2).intersects(pr):
+			_smash_crate(i)
+
+
+func _smash_crate(i: int) -> void:
+	crates_destroyed[i] = true
+	crate_bodies[i].queue_free()
+	var c = data.crates[i]
+	dust(Vector2(c.x * TILE + 16.0, GROUND_Y - CRATE * c.stack - 16.0), 12, Color("c89a5c"))
+	Audio.sfx("break", 1.1)
+	camera.shake(1.5)
+	$World/Terrain.queue_redraw()
+
+
 func _spawn_powerups() -> void:
 	if role != "sheriff" or hero == "sheriff":
 		return
@@ -1074,7 +1102,12 @@ func _build_solids() -> void:
 		var x1: float = seg[1] * TILE
 		_rect_shape(body, Rect2(x0, GROUND_Y, x1 - x0, GROUND_DEPTH))
 	for c in data.crates:
-		_rect_shape(body, Rect2(c.x * TILE, GROUND_Y - CRATE * (c.stack + 1), CRATE, CRATE))
+		var cbody := StaticBody2D.new()
+		cbody.collision_layer = LAYER_SOLID
+		cbody.collision_mask = 0
+		world.add_child(cbody)
+		_rect_shape(cbody, Rect2(c.x * TILE, GROUND_Y - CRATE * (c.stack + 1), CRATE, CRATE))
+		crate_bodies.append(cbody)
 	# invisible walls at both edges, and the end-of-level fence
 	_rect_shape(body, Rect2(-TILE, -400, TILE, 1000))
 	_rect_shape(body, Rect2(fence_px(), GROUND_Y - FENCE_H, TILE * 1.5, FENCE_H))

@@ -20,6 +20,7 @@ const FURNITURE := {
 var data: Dictionary
 var text: Dictionary
 var gy := 0.0
+var crates_destroyed: Dictionary = {}    # set by Level: data.crates index -> true
 var _items: Array = []      # [prop name, x]
 var _t := 0.0
 
@@ -95,7 +96,10 @@ func _draw() -> void:
 			_hook(ring)
 	if not signs.is_empty():
 		_sign_hooks(signs)
-	for c in data.crates:
+	for i in data.crates.size():
+		if crates_destroyed.has(i):
+			continue
+		var c = data.crates[i]
 		draw_texture(SpriteLib.prop("crate"), Vector2(c.x * TILE, gy - 32.0 * (c.stack + 1)))
 	if data.get("train", false):
 		return                 # no gate or town sign on top of a moving train
