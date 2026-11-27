@@ -24,6 +24,9 @@ const MPH := 0.25                    # px/s -> "miles per hour" shown on the HUD
 const ONCOMING_SCALE := 0.75         # oncoming cars drive at this share of the speed in the course file
 const WARN_DIST := 950.0             # oncoming car in your lane: "!" warning and a horn this far ahead
 const DODGE_DIST := 300.0            # oncoming drivers try to swerve out of your lane this close
+const BOTTLE_FALL_TIME := 0.55       # seconds a thrown bottle spins before it splats
+const CROSSING_LEAD := 420.0         # the railroad gate starts lowering this far ahead of you
+const CROSSING_LOWER_TIME := 1.1     # seconds for the gate to fully lower
 
 var level: Node
 var course: Dictionary
@@ -43,6 +46,10 @@ var shake := 0.0
 var traffic: Array = []
 var crates: Array = []
 var pies: Array = []
+var cows: Array = []
+var bottles: Array = []
+var bottle_t := 160
+var crossing: Dictionary = {}
 var truck := {"x": 300.0, "lane": 1, "ly": 26.0, "v": 200.0, "lane_t": 120, "drop_t": 200, "spin": 0.0}
 var bumps := 0
 var outro := -1                      # frames left in the ending, -1 = still chasing
@@ -64,6 +71,11 @@ func setup(l: Node, data: Dictionary) -> void:
 	for pz in course.pies:
 		pies.append({"x": float(pz[0]), "lane": int(pz[1]), "got": false})
 		level.pies_total += 1
+	for cw in course.get("cows", []):
+		cows.append({"x": float(cw[0]), "lane": int(cw[1]), "ly": LANES[cw[1]], "hit": false, "t": 0.0})
+	var cx: float = course.get("crossing_x", -1.0)
+	if cx > 0.0:
+		crossing = {"x": cx, "lower": 0.0, "hit": false}
 	var backdrop := Node2D.new()
 	backdrop.name = "Backdrop"
 	add_child(backdrop)
@@ -136,6 +148,7 @@ func _physics_process(delta: float) -> void:
 		_drive(delta)
 		_truck_ai(delta)
 		_traffic(delta)
+		_hazards(delta)
 		_collide()
 	_camera(delta)
 	Audio.loop("engine", true, 0.6 + speed / MAX_SPEED * 1.2, 0.5)
@@ -286,6 +299,31 @@ func _truck_ai(delta: float) -> void:
 		_begin_outro()
 
 
+## Cows graze in place (frozen once bumped), thrown bottles arc down then
+## settle into a slippery splat, and the railroad gate lowers as you approach.
+func _hazards(delta: float) -> void:
+	for cw in cows:
+		if not cw.hit:
+			cw.t += delta
+	bottle_t -= 1
+	if bottle_t <= 0:
+		bottle_t = 150 + randi() % 90
+		if truck.x - x > 60.0 and truck.x < course.end - 400:
+			bottles.append({"x": truck.x - TRUCK_HALF, "lane": truck.lane, "t": 0.0, "landed": false, "hit": false})
+			if randf() < 0.5:
+				say(GameText.CHASE_EARL_BOTTLE, "")
+	for b in bottles:
+		if not b.landed:
+			b.t += delta
+			if b.t >= BOTTLE_FALL_TIME:
+				b.landed = true
+				b.t = 0.0
+	if not crossing.is_empty():
+		var d: float = crossing.x - x
+		if d < CROSSING_LEAD:
+			crossing.lower = minf(crossing.lower + delta / CROSSING_LOWER_TIME, 1.0)
+
+
 func _traffic(delta: float) -> void:
 	for v in traffic:
 		if v.gone:
@@ -360,6 +398,30 @@ func _collide() -> void:
 			speed *= 0.7
 			shake = 2.0
 			Audio.sfx("break", 1.2)
+	# cows: soft hazard, just a hard brake and a laugh
+	for cw in cows:
+		if not cw.hit and absf(cw.ly - lane_y) < 8.0 and absf(cw.x - x) < CAR_HALF + 14.0:
+			cw.hit = true
+			speed *= 0.5
+			shake = 4.0
+			Audio.sfx("moo")
+			flash(GameText.CHASE_COW_HIT)
+	# milk bottle splats: slippery once landed
+	for b in bottles:
+		if b.landed and not b.hit and absf(LANES[b.lane] - lane_y) < 8.0 and absf(b.x - x) < CAR_HALF + 6.0:
+			b.hit = true
+			speed *= 0.85
+			shake = 1.0
+			Audio.sfx("splash", 1.3)
+			flash(GameText.CHASE_SPLAT)
+	# the railroad crossing gate, once fully down (only blocks the middle lane)
+	if not crossing.is_empty() and crossing.lower >= 0.9 and not crossing.hit:
+		if absf(LANES[1] - lane_y) < 8.0 and absf(crossing.x - x) < CAR_HALF + 10.0:
+			crossing.hit = true
+			speed *= 0.5
+			shake = 4.0
+			Audio.sfx("crash", 1.1)
+			flash(GameText.CHASE_CROSSING_HIT)
 	# pies
 	for p in pies:
 		if not p.got and absf(LANES[p.lane] - lane_y) < 8.0 and absf(p.x - x) < CAR_HALF:
