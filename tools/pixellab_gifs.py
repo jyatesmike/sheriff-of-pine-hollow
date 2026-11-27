@@ -17,6 +17,8 @@ Option --pin-feet sits each jump/fall/land/slide/skid frame on its own feet;
 --anchor=body lines frames up by the character's body instead of the canvas centre.
 Option --fix-navy recolours navy trousers back to the khaki uniform (some
 PixelLab templates ignore the character's colours).
+Option --despeckle removes small specks floating free of the character (PixelLab
+sometimes leaves a stray dot or a scrap of rope beside him).
 """
 import glob
 import json
@@ -44,6 +46,32 @@ def load(spec, fix_navy):
     if fix_navy:
         fr = [recolour(f) for f in fr]
     return fr
+
+
+def despeckle(im, max_px=60):
+    """Clear small groups of opaque pixels that don't touch the character."""
+    im = im.copy()
+    px = im.load()
+    w, h = im.size
+    seen = set()
+    for y0 in range(h):
+        for x0 in range(w):
+            if (x0, y0) in seen or px[x0, y0][3] <= 32:
+                continue
+            group, todo = [], [(x0, y0)]
+            seen.add((x0, y0))
+            while todo:
+                x, y = todo.pop()
+                group.append((x, y))
+                for nx in range(x - 1, x + 2):
+                    for ny in range(y - 1, y + 2):
+                        if 0 <= nx < w and 0 <= ny < h and (nx, ny) not in seen and px[nx, ny][3] > 32:
+                            seen.add((nx, ny))
+                            todo.append((nx, ny))
+            if len(group) <= max_px:
+                for x, y in group:
+                    px[x, y] = (0, 0, 0, 0)
+    return im
 
 
 def recolour(im):
@@ -121,6 +149,8 @@ def main():
         k, _, v = a.partition("=")
         fix = "fix-navy" in fixes and k in ("jumpall", "jump", "fall", "land", "throw", "aim")
         anims[k] = load(v, fix)
+        if "despeckle" in fixes:
+            anims[k] = [despeckle(f, 15 * S * S) for f in anims[k]]
     base = anims["idle"][0]
     rows = layout_rows(sheet_name)
     pin_feet = "pin-feet" in fixes
