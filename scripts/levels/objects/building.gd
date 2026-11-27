@@ -16,6 +16,20 @@ const TEX := {
 	"dressmaker": preload("res://art/sprites/buildings/dressmaker.png"),
 }
 
+# Each building's blank signboard, in image pixels (0,0 = top-left of its
+# texture). The game paints the player's shop name here — the same "12 shop
+# signs" the background used to carry before it competed with these real
+# buildings. Not checked against a live render; nudge if text overflows.
+const SIGNS := {
+	"hardware": Rect2(22, 130, 115, 22),
+	"diner": Rect2(21, 144, 119, 23),
+	"barbershop": Rect2(29, 135, 102, 18),
+	"post_office": Rect2(31, 120, 106, 24),
+	"grocery": Rect2(30, 125, 76, 18),
+	"dressmaker": Rect2(95, 95, 60, 17),
+}
+const STYLE_ORDER := ["hardware", "diner", "barbershop", "post_office", "grocery", "dressmaker"]
+
 var w := 0.0
 var top := 0.0
 var ladder_x := 0.0
@@ -68,6 +82,7 @@ func _draw() -> void:
 	var style: String = o.get("style", "hardware")
 	var tex: Texture2D = TEX.get(style, TEX["hardware"])
 	draw_texture_rect(tex, Rect2(0, top, w, -top), false)
+	_draw_sign(style)
 	if _has_ladder():
 		var lx := ladder_x
 		for side in [-6.0, 6.0]:
@@ -76,3 +91,17 @@ func _draw() -> void:
 		while y < -2.0:
 			draw_rect(Rect2(lx - 6, y, 13, 2), Color("4a4a56"))
 			y += 8.0
+
+
+func _draw_sign(style: String) -> void:
+	var r: Rect2 = SIGNS.get(style, Rect2())
+	if r.size == Vector2.ZERO:
+		return
+	var idx := STYLE_ORDER.find(style)
+	if idx < 0 or Names.signs.is_empty():
+		return
+	var text: String = Names.signs[idx % Names.signs.size()].to_upper()
+	var scale := 2 if PixelFont.width(text, 2) <= r.size.x - 6 else 1
+	var sign_y: float = top + r.position.y + (r.size.y - 5 * scale) / 2.0
+	var sign_x: float = r.position.x + (r.size.x - PixelFont.width(text, scale)) / 2.0
+	PixelFont.draw(self, text, Vector2(roundf(sign_x), roundf(sign_y)), Color("3a2414"), scale, false)
