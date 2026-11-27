@@ -211,6 +211,11 @@ const CHASE_SIGN_CURVE := "SLOW"
 const CHASE_SIGN_RAMP := "BRIDGE OUT - FULL SPEED!"
 const CHASE_FARM_STAND := "PIES"
 const CHASE_CONTROLS := "RIGHT = GAS   LEFT = BRAKE   UP/DOWN = LANE   SHIFT = SIREN"
+const CHASE_EARL_BOTTLE := "Catch!"
+const CHASE_SPLAT := "Splat! Milk puddle, slippery!"
+const CHASE_COW_HIT := "Moo! Sorry, Bessie!"
+const CHASE_SIGN_CROSSING := "RAILROAD CROSSING"
+const CHASE_CROSSING_HIT := "Crash! Gate was down!"
 
 
 # --- The Chicken Run set-pieces -----------------------------------------------------------

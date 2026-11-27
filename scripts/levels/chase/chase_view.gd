@@ -7,6 +7,40 @@ extends Node2D
 const OUTLINE := Color("24140e")
 const LAYERS := [["far", 0.15], ["mid", 0.3], ["main", 0.55], ["near", 0.8]]
 
+const COW_WALK_FRAMES: Array[Texture2D] = [
+	preload("res://art/sprites/props/cow_walk/frame_0.png"),
+	preload("res://art/sprites/props/cow_walk/frame_1.png"),
+	preload("res://art/sprites/props/cow_walk/frame_2.png"),
+	preload("res://art/sprites/props/cow_walk/frame_3.png"),
+	preload("res://art/sprites/props/cow_walk/frame_4.png"),
+	preload("res://art/sprites/props/cow_walk/frame_5.png"),
+	preload("res://art/sprites/props/cow_walk/frame_6.png"),
+]
+const BOTTLE_SPIN_FRAMES: Array[Texture2D] = [
+	preload("res://art/sprites/props/bottle_spin/frame_0.png"),
+	preload("res://art/sprites/props/bottle_spin/frame_1.png"),
+	preload("res://art/sprites/props/bottle_spin/frame_2.png"),
+	preload("res://art/sprites/props/bottle_spin/frame_3.png"),
+	preload("res://art/sprites/props/bottle_spin/frame_4.png"),
+]
+const MILK_SPLAT_FRAMES: Array[Texture2D] = [
+	preload("res://art/sprites/props/milk_splat/frame_0.png"),
+	preload("res://art/sprites/props/milk_splat/frame_1.png"),
+	preload("res://art/sprites/props/milk_splat/frame_2.png"),
+	preload("res://art/sprites/props/milk_splat/frame_3.png"),
+	preload("res://art/sprites/props/milk_splat/frame_4.png"),
+]
+const CROSSING_TEX := preload("res://art/sprites/props/railroad_crossing.png")
+const CROSSING_LOWER_FRAMES: Array[Texture2D] = [
+	preload("res://art/sprites/props/crossing_lower/frame_0.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_1.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_2.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_3.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_4.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_5.png"),
+	preload("res://art/sprites/props/crossing_lower/frame_6.png"),
+]
+
 var c: Node2D                      # the chase
 var town_layers: Array = []
 var farm_layers: Array = []
@@ -70,6 +104,10 @@ func _draw() -> void:
 	for p in c.pies:
 		if not p.got:
 			items.append(["pie", c.LANES[p.lane], p])
+	for cw in c.cows:
+		items.append(["cow", cw.ly, cw])
+	for b in c.bottles:
+		items.append(["bottle", c.LANES[b.lane], b])
 	items.append(["truck", c.truck.ly, c.truck])
 	items.append(["car", c.lane_y, null])
 	items.sort_custom(func(a, b): return a[1] < b[1])
@@ -78,8 +116,11 @@ func _draw() -> void:
 			"v": _vehicle(it[2])
 			"crate": _crate(it[2])
 			"pie": draw_texture(SpriteLib.prop("pie"), c.screen_point(it[2].x, c.LANES[it[2].lane]) + Vector2(-8, -14))
+			"cow": _cow(it[2])
+			"bottle": _bottle(it[2])
 			"truck": _truck()
 			"car": _car()
+	_crossing()
 	_hay_bales(x0, x1, true)
 	_warnings()
 	if bubble_t > 0:
@@ -147,6 +188,16 @@ func _signs(x0: float, x1: float) -> void:
 		draw_rect(Rect2(rx - w / 2.0 - 1, top - 44, w + 2, 14), OUTLINE)
 		draw_rect(Rect2(rx - w / 2.0, top - 43, w, 12), Color("f08a1a"))
 		PixelFont.draw_centered(self, t, rx, top - 40, OUTLINE)
+	if not c.crossing.is_empty():
+		var rxc: float = c.crossing.x - 460.0
+		if rxc > x0 and rxc < x1:
+			var top: float = -c.elevation(rxc) - 8.0
+			draw_rect(Rect2(rxc - 1, top - 28, 3, 28), Color("4a4a56"))
+			var t := GameText.CHASE_SIGN_CROSSING
+			var w := PixelFont.width(t) + 8
+			draw_rect(Rect2(rxc - w / 2.0 - 1, top - 44, w + 2, 14), OUTLINE)
+			draw_rect(Rect2(rxc - w / 2.0, top - 43, w, 12), Color("f4ecd4"))
+			PixelFont.draw_centered(self, t, rxc, top - 40, OUTLINE)
 	var fx: float = c.course.farm_stand
 	if fx > x0 - 60 and fx < x1:
 		var top: float = -c.elevation(fx) - 8.0
@@ -252,6 +303,42 @@ func _crate(cr: Dictionary) -> void:
 		draw_texture(SpriteLib.prop("milk_crate"), p + Vector2(-9, -16 - cr.y))
 	else:
 		draw_texture(SpriteLib.prop("milk_crate"), p + Vector2(-9, -16))
+
+
+func _cow(cw: Dictionary) -> void:
+	var frame: int = int(cw.t * 6.0) % COW_WALK_FRAMES.size()
+	var p: Vector2 = c.screen_point(cw.x, cw.ly)
+	draw_texture(COW_WALK_FRAMES[frame], p + Vector2(-24, -36))
+
+
+func _bottle(b: Dictionary) -> void:
+	var p: Vector2 = c.screen_point(b.x, c.LANES[b.lane])
+	if b.landed:
+		var frame: int = clampi(int(b.t * 12.0), 0, MILK_SPLAT_FRAMES.size() - 1)
+		draw_texture(MILK_SPLAT_FRAMES[frame], p + Vector2(-16, -20))
+	else:
+		var s: float = b.t / c.BOTTLE_FALL_TIME
+		var arc := sin(s * PI) * 26.0
+		var frame: int = int(s * (BOTTLE_SPIN_FRAMES.size() - 1))
+		draw_texture(BOTTLE_SPIN_FRAMES[frame], p + Vector2(-16, -32 - arc))
+
+
+## The railroad crossing: a static gate that lowers (crossing_lower frames) as
+## you approach, then blinks warning lights once it's part-way down. Only
+## spans the middle lane, so there's always a way around.
+func _crossing() -> void:
+	if c.crossing.is_empty():
+		return
+	var cx: float = c.crossing.x
+	var top: float = -c.elevation(cx) - 8.0
+	var lower: float = c.crossing.lower
+	var tex: Texture2D = CROSSING_TEX
+	if lower > 0.0:
+		tex = CROSSING_LOWER_FRAMES[clampi(int(lower * 6.0), 0, CROSSING_LOWER_FRAMES.size() - 1)]
+	draw_texture(tex, Vector2(cx - 32, top - 128))
+	if lower > 0.05 and int(c._t * 6.0) % 2 == 0:
+		draw_circle(Vector2(cx - 20, top - 94), 3.0, Color("ff3a2a"))
+		draw_circle(Vector2(cx + 20, top - 94), 3.0, Color("ff3a2a"))
 
 
 func _wheels(at: Vector2, xs: Array, y: float) -> void:
